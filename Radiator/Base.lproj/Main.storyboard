@@ -6,24 +6,9 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
-        <scene sceneID="tne-QT-ifu">
-            <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Radiator" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
         <!--Menu Table View Controller-->
         <scene sceneID="9Ya-F8-Qiv">
             <objects>
@@ -118,20 +103,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Kh-Ks-FvT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1766.25" y="297.88732394366195"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="SGg-G2-ri6">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0AN-9d-4W7" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController id="8V8-zm-TAE" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="fj1-zu-EXM">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <viewLayoutGuide key="safeArea" id="LsT-Sz-vXO"/>
-                    </view>
-                </viewController>
-            </objects>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="v6k-QH-8qC">
