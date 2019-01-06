@@ -17,6 +17,8 @@
 		3077E54C21CC333B00814343 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3077E54A21CC333B00814343 /* LaunchScreen.storyboard */; };
 		3077E55721CC333C00814343 /* RadiatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E55621CC333C00814343 /* RadiatorTests.swift */; };
 		3077E56221CC333D00814343 /* RadiatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E56121CC333D00814343 /* RadiatorUITests.swift */; };
+		30B2829C21DC0C5400CE731C /* FilesProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; };
+		30B2829D21DC0C5400CE731C /* FilesProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +36,56 @@
 			remoteGlobalIDString = 3077E53D21CC333800814343;
 			remoteInfo = Radiator;
 		};
+		30B2829421DC0C1900CE731C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 799396671D48B7F600086753;
+			remoteInfo = "FilesProvider iOS";
+		};
+		30B2829621DC0C1900CE731C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 799396751D48B80D00086753;
+			remoteInfo = "FilesProvider OSX";
+		};
+		30B2829821DC0C1900CE731C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 799396821D48B82700086753;
+			remoteInfo = "FilesProvider tvOS";
+		};
+		30B2829A21DC0C1900CE731C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 79D903511FAB647400D61D31;
+			remoteInfo = FilesProviderTests;
+		};
+		30B2829E21DC0C5400CE731C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 799396661D48B7F600086753;
+			remoteInfo = "FilesProvider iOS";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		30B282A021DC0C5500CE731C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				30B2829D21DC0C5400CE731C /* FilesProvider.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		300741B721DBE35A008BFFAA /* FTPfileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTPfileUploader.swift; sourceTree = "<group>"; };
@@ -53,6 +104,7 @@
 		3077E55D21CC333D00814343 /* RadiatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RadiatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3077E56121CC333D00814343 /* RadiatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadiatorUITests.swift; sourceTree = "<group>"; };
 		3077E56321CC333D00814343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FilesProvider.xcodeproj; path = FileProvider/FilesProvider.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +112,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30B2829C21DC0C5400CE731C /* FilesProvider.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -83,6 +136,7 @@
 		3077E53521CC333700814343 = {
 			isa = PBXGroup;
 			children = (
+				30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */,
 				3077E54021CC333800814343 /* Radiator */,
 				3077E55521CC333C00814343 /* RadiatorTests */,
 				3077E56021CC333D00814343 /* RadiatorUITests */,
@@ -134,6 +188,17 @@
 			path = RadiatorUITests;
 			sourceTree = "<group>";
 		};
+		30B2828E21DC0C1800CE731C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				30B2829521DC0C1900CE731C /* FilesProvider.framework */,
+				30B2829721DC0C1900CE731C /* FilesProvider.framework */,
+				30B2829921DC0C1900CE731C /* FilesProvider.framework */,
+				30B2829B21DC0C1900CE731C /* FilesProviderTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -144,10 +209,12 @@
 				3077E53A21CC333800814343 /* Sources */,
 				3077E53B21CC333800814343 /* Frameworks */,
 				3077E53C21CC333800814343 /* Resources */,
+				30B282A021DC0C5500CE731C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				30B2829F21DC0C5400CE731C /* PBXTargetDependency */,
 			);
 			name = Radiator;
 			productName = Radiator;
@@ -224,6 +291,12 @@
 			mainGroup = 3077E53521CC333700814343;
 			productRefGroup = 3077E53F21CC333800814343 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 30B2828E21DC0C1800CE731C /* Products */;
+					ProjectRef = 30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				3077E53D21CC333800814343 /* Radiator */,
@@ -232,6 +305,37 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		30B2829521DC0C1900CE731C /* FilesProvider.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = FilesProvider.framework;
+			remoteRef = 30B2829421DC0C1900CE731C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		30B2829721DC0C1900CE731C /* FilesProvider.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = FilesProvider.framework;
+			remoteRef = 30B2829621DC0C1900CE731C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		30B2829921DC0C1900CE731C /* FilesProvider.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = FilesProvider.framework;
+			remoteRef = 30B2829821DC0C1900CE731C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		30B2829B21DC0C1900CE731C /* FilesProviderTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = FilesProviderTests.xctest;
+			remoteRef = 30B2829A21DC0C1900CE731C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		3077E53C21CC333800814343 /* Resources */ = {
@@ -301,6 +405,11 @@
 			isa = PBXTargetDependency;
 			target = 3077E53D21CC333800814343 /* Radiator */;
 			targetProxy = 3077E55E21CC333D00814343 /* PBXContainerItemProxy */;
+		};
+		30B2829F21DC0C5400CE731C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "FilesProvider iOS";
+			targetProxy = 30B2829E21DC0C5400CE731C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -443,6 +552,7 @@
 		3077E56721CC333E00814343 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QXYQ94XRJK;
@@ -462,6 +572,7 @@
 		3077E56821CC333E00814343 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QXYQ94XRJK;

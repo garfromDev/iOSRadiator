@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <sections>
-                            <tableViewSection headerTitle="Mode forcé" id="K6B-Rq-rgS">
+                            <tableViewSection headerTitle="Mode " id="K6B-Rq-rgS">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="uj8-Bw-H9k">
                                         <rect key="frame" x="0.0" y="28" width="320" height="44"/>
@@ -27,31 +27,24 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Confort" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tFr-CA-U3c">
-                                                    <rect key="frame" x="131" y="11" width="59" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="VDw-x2-Iph">
+                                                    <rect key="frame" x="16" y="7" width="288" height="29"/>
+                                                    <segments>
+                                                        <segment title="Eco"/>
+                                                        <segment title="Confort"/>
+                                                        <segment title="Calendrier"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="modeDidChange:" destination="7I5-EF-7Kj" eventType="valueChanged" id="Xte-6h-ygv"/>
+                                                    </connections>
+                                                </segmentedControl>
                                             </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="NCH-li-rcM">
-                                        <rect key="frame" x="0.0" y="72" width="320" height="44"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NCH-li-rcM" id="cc1-wG-Fmd">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Eco" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SXp-qo-GNa">
-                                                    <rect key="frame" x="146" y="11" width="29" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="VDw-x2-Iph" firstAttribute="trailing" secondItem="6rV-ER-DE2" secondAttribute="trailingMargin" id="Bpx-6L-Nwu"/>
+                                                <constraint firstItem="VDw-x2-Iph" firstAttribute="centerY" secondItem="6rV-ER-DE2" secondAttribute="centerY" id="TpZ-ed-65B"/>
+                                                <constraint firstItem="VDw-x2-Iph" firstAttribute="leading" secondItem="6rV-ER-DE2" secondAttribute="leadingMargin" id="h0O-3c-X2h"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="VDw-x2-Iph" secondAttribute="bottom" constant="-2" id="xlE-U4-the"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -59,23 +52,30 @@
                             <tableViewSection headerTitle="Ajustement" id="v4z-oe-5dW">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="9rv-hK-bAN">
-                                        <rect key="frame" x="0.0" y="144" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="100" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9rv-hK-bAN" id="3L2-1F-4mv">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9sN-vU-pAi">
-                                                    <rect key="frame" x="16" y="6" width="76" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Plus chaud"/>
-                                                </button>
-                                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bMN-FA-9pI">
-                                                    <rect key="frame" x="239" y="6" width="65" height="30"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <state key="normal" title="Plus froid"/>
-                                                </button>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="1" translatesAutoresizingMaskIntoConstraints="NO" id="cab-je-6pp">
+                                                    <rect key="frame" x="16" y="7" width="288" height="29"/>
+                                                    <segments>
+                                                        <segment title="J'ai chaud"/>
+                                                        <segment title="OK"/>
+                                                        <segment title="J'ai froid"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="upDownDidChange:" destination="7I5-EF-7Kj" eventType="valueChanged" id="TCs-Ni-LRy"/>
+                                                    </connections>
+                                                </segmentedControl>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="cab-je-6pp" secondAttribute="bottom" constant="-2" id="3tx-x8-tw1"/>
+                                                <constraint firstItem="cab-je-6pp" firstAttribute="leading" secondItem="3L2-1F-4mv" secondAttribute="leadingMargin" id="SEq-1q-yqh"/>
+                                                <constraint firstItem="cab-je-6pp" firstAttribute="centerY" secondItem="3L2-1F-4mv" secondAttribute="centerY" id="oz6-dV-7HF"/>
+                                                <constraint firstItem="cab-je-6pp" firstAttribute="trailing" secondItem="3L2-1F-4mv" secondAttribute="trailingMargin" id="pET-C0-2aI"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -83,7 +83,7 @@
                             <tableViewSection headerTitle="Calendrier" id="dhF-DN-Bn4">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="200" id="uao-yJ-7Ag">
-                                        <rect key="frame" x="0.0" y="216" width="320" height="200"/>
+                                        <rect key="frame" x="0.0" y="172" width="320" height="200"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="uao-yJ-7Ag" id="o5p-Bg-cRV">
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="199.5"/>

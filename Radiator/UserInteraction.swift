@@ -11,9 +11,9 @@
 import Foundation
 
 enum HeatingMode:String , Codable{
-    case confort = "CONFORT"
-    case eco = "ECO"
-    case unknow = "UNKNOW"
+    case confort = "confort"
+    case eco = "eco"
+    case unknow = "unknow"
 }
 
 struct OverruledStatus : Codable{
@@ -25,13 +25,27 @@ struct OverruledStatus : Codable{
 struct DatedStatus : Codable {
     var status : Bool = false
     var expirationDate : Date = Date(timeIntervalSince1970: 0)
+    
+    static func makeTrue()->DatedStatus{
+        var s = DatedStatus()
+        s.status = true
+        s.expirationDate = DatedStatus.defaultExpirationDate()
+        return s
+    }
+
+    static func defaultExpirationDate()->Date{
+        return Date(timeIntervalSinceNow: 24*60*60)
+    }
 }
 
 struct UserInteraction : Codable{
     var overruled : OverruledStatus = OverruledStatus()
     var userBonus : DatedStatus = DatedStatus()
     var userDown : DatedStatus = DatedStatus()
+
+
 }
+
 
 extension UserInteraction {
     func toJson() ->Data {
@@ -44,4 +58,10 @@ extension UserInteraction {
         let data =  try! encoder.encode(self)
         return data
     }
+    
+    mutating func setDefaultExpirationDate(){
+        self.overruled.expirationDate = Date(timeIntervalSinceNow: 24*60*60)
+    }
+    
+ 
 }

@@ -22,6 +22,6 @@ class UserInteractionManager{
     }
     
     func update(){
-        self.distantFileManager.push(data:self.userInteraction.toJson(), fileName: "user.json")
+        self.distantFileManager.push(data:self.userInteraction.toJson(), fileName: "userInteraction.json")
     }
 }
