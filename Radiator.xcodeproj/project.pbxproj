@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		300741B821DBE35A008BFFAA /* FTPfileUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300741B721DBE35A008BFFAA /* FTPfileUploader.swift */; };
+		303C69AC21E3E6C100EABBF6 /* CalendarObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303C69A821E3E6C000EABBF6 /* CalendarObject.swift */; };
 		3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067011021D913AA008C7A53 /* UserInteraction.swift */; };
 		3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */; };
 		3077E54221CC333800814343 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E54121CC333800814343 /* AppDelegate.swift */; };
@@ -89,6 +90,7 @@
 
 /* Begin PBXFileReference section */
 		300741B721DBE35A008BFFAA /* FTPfileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTPfileUploader.swift; sourceTree = "<group>"; };
+		303C69A821E3E6C000EABBF6 /* CalendarObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarObject.swift; sourceTree = "<group>"; };
 		3067011021D913AA008C7A53 /* UserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteraction.swift; sourceTree = "<group>"; };
 		3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteractionManager.swift; sourceTree = "<group>"; };
 		3077E53E21CC333800814343 /* Radiator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Radiator.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -157,6 +159,7 @@
 		3077E54021CC333800814343 /* Radiator */ = {
 			isa = PBXGroup;
 			children = (
+				303C69A821E3E6C000EABBF6 /* CalendarObject.swift */,
 				3077E54121CC333800814343 /* AppDelegate.swift */,
 				3077E54321CC333800814343 /* MenuTableViewController.swift */,
 				3067011021D913AA008C7A53 /* UserInteraction.swift */,
@@ -370,6 +373,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				300741B821DBE35A008BFFAA /* FTPfileUploader.swift in Sources */,
+				303C69AC21E3E6C100EABBF6 /* CalendarObject.swift in Sources */,
 				3077E54421CC333800814343 /* MenuTableViewController.swift in Sources */,
 				3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */,
 				3077E54221CC333800814343 /* AppDelegate.swift in Sources */,

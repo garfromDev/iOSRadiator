@@ -15,6 +15,7 @@ class MenuTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -24,13 +25,11 @@ class MenuTableViewController: UITableViewController {
         case 2: //calendrier
             userInteractionManager?.userInteraction.overruled.status = false
         case 0,1: //overrule eco ou confort
-            userInteractionManager?.userInteraction.overruled.status = true
-            userInteractionManager?.userInteraction.setDefaultExpirationDate()
-            userInteractionManager?.userInteraction.overruled.overMode = sender.selectedSegmentIndex == 0 ? .eco : .confort
+            userInteractionManager?.userInteraction.setOverruleMode(sender.selectedSegmentIndex == 0 ? .eco : .confort)
         default:
             break
         }
-        userInteractionManager?.update()
+        userInteractionManager?.pushUpdate()
     }
     
     
@@ -45,7 +44,7 @@ class MenuTableViewController: UITableViewController {
         default:
             break
         }
-        userInteractionManager?.update()
+        userInteractionManager?.pushUpdate()
     }
 
     

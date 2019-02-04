@@ -10,6 +10,13 @@ import Foundation
 import FilesProvider
 
 // voir https://github.com/amosavian/FileProvider/blob/master/Sources/FTPFileProvider.swift
+enum DataOperationResult{
+    case success(data:Data)
+    case failure(error:Error)
+}
+
+typealias DataCompletionHandler = (_ result:DataOperationResult)->Void
+
 
 struct FTPfileUploader : DistantFileManager {
     private let ftp : FTPFileProvider
@@ -27,4 +34,19 @@ struct FTPfileUploader : DistantFileManager {
             print(err?.localizedDescription)
         }
     }
+    
+    
+    func pull(fileName: String, completion: @escaping DataCompletionHandler){
+        ftp.contents(path: "sample.txt") {
+            contents, error in
+            if let contents = contents {
+                completion(.success(data:contents))
+            }else{
+                completion(.failure(error:error!))
+            }
+        }
+    }
+        
+        
 }
+

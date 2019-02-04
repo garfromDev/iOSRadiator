@@ -18,6 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
 //        let u = UserInteraction()
 //        print(String(data: u.toJson(), encoding: .utf8)!)
+        test()
         return true
     }
 
