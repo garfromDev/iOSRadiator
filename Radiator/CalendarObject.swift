@@ -34,15 +34,15 @@ extension Calendars{
 }
 
 
-let t=["weekCalendar":["monday" : ["00":.confort,"015":.eco] as DayCalendar]]
 
 
 
 func test(){
-let encoder = JSONEncoder()
-encoder.outputFormatting = .prettyPrinted
-let data =  try! encoder.encode(t)
-let result = String(data:data, encoding:.utf8)
-print(result!)
+    let t=["weekCalendar":["monday" : ["00":.confort,"015":.eco] as DayCalendar]]
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = .prettyPrinted
+    let data =  try! encoder.encode(t)
+    let result = String(data:data, encoding:.utf8)
+    print(result!)
 }
 

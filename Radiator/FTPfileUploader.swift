@@ -31,7 +31,7 @@ struct FTPfileUploader : DistantFileManager {
     func push(data: Data, fileName: String) {
         print("pushing file to ftp...")
         ftp.writeContents(path: fileName, contents: data, overwrite: true) { (err : Error?) in
-            print(err?.localizedDescription)
+            print(err?.localizedDescription ?? "FTP push Error")
         }
     }
     
