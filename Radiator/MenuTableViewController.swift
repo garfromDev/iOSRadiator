@@ -10,7 +10,7 @@
 import UIKit
 
 
-class MenuTableViewController: UITableViewController {
+class MenuTableViewController: UITableViewController, UserInteractionCapable {
 
     let userInteractionManager : UserInteractionManager? = UserInteractionManager(distantFileManager: FTPfileUploader())
     

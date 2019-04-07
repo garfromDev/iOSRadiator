@@ -7,6 +7,12 @@
 //
 
 import Foundation
+import UIKit
+
+protocol UserInteractionCapable{
+    var userInteractionManager: UserInteractionManager? {get}
+}
+
 
 protocol DistantFileManager{
     func push(data:Data, fileName:String)
@@ -50,6 +56,13 @@ class UserInteractionManager{
     
     
     func pullUpdate(){
+        // call pullUpdate with a dummy handler, for local triggered update
+        pullUpdate(handler:{(res:UIBackgroundFetchResult) in })
+    }
+    
+    
+    func pullUpdate(handler completionHandler: (UIBackgroundFetchResult) -> Void){
+        // TODO: implémenter gestion du handler
         // get new value of UserInteraction
         self.distantFileManager.pull(fileName: Files.userInteraction){
             (result:DataOperationResult) in
