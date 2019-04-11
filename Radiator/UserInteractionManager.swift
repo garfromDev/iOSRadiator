@@ -9,16 +9,18 @@
 import Foundation
 import UIKit
 
+/// utility of this protocol not clear
 protocol UserInteractionCapable{
     var userInteractionManager: UserInteractionManager? {get}
 }
 
-
+/** describe an object capable of pushing / retrieving file from distant system */
 protocol DistantFileManager{
     func push(data:Data, fileName:String)
     func pull(fileName:String, completion:@escaping DataCompletionHandler)
 }
 
+/** constant for files used in Radiator */
 struct Files{
     static let userInteraction = "userInteraction.json"
     static let calendars = "calendars.json"
@@ -36,14 +38,23 @@ On check régulièrement si apparition de changement (via le système de fetch)
  un fichier currentStatus.json contenant les infos remonté par la raspberry (lecture uniquement)
 */
 
-class UserInteractionManager{
+/**
+ controller must add itself to observer to get UI_Update() notification
+ controller fetch and set  userInteraction data using UserInteraction method
+ controller triggers push to distant file, this will trigger UI update as well
+ pull is also triggered by Backgroundfetch mecanism, defined in AppDelegate
+*/
+class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
     var calendars : Calendars = Calendars()
     
     private var distantFileManager : DistantFileManager
+    var observer : UI_Updatable?
     
-    init(distantFileManager: DistantFileManager){
+    init(distantFileManager: DistantFileManager, observer:UI_Updatable? = nil){
         self.distantFileManager = distantFileManager
+        self.observer = observer
+        super.init()
         self.pullUpdate()
     }
     
@@ -52,6 +63,7 @@ class UserInteractionManager{
         self.distantFileManager.push(data:self.userInteraction.toJson(),
                                      fileName: Files.userInteraction)
         //self.distantFileManager.push(data: self.calendars.toJson(), fileName: Files.calendars)
+        self.UIupdate()
     }
     
     
@@ -61,22 +73,33 @@ class UserInteractionManager{
     }
     
     
-    func pullUpdate(handler completionHandler: (UIBackgroundFetchResult) -> Void){
-        // TODO: implémenter gestion du handler
+    func pullUpdate(handler completionHandler: @escaping (UIBackgroundFetchResult) -> Void){
+        print("UserInteractionManager pulling update")
         // get new value of UserInteraction
         self.distantFileManager.pull(fileName: Files.userInteraction){
             (result:DataOperationResult) in
             switch result{
             case .success(let data):
+                print("Distant file manager has got datas")
+                completionHandler(.newData)
                 if let newUsrInteraction = UserInteraction.fromJson(data: data){
                     self.userInteraction = newUsrInteraction
+                    print("UserInteractionManager.userinteraction has new value \(newUsrInteraction)")
+                    self.UIupdate()
                 }
             case .failure(let error):
                 // in case of failure, we keep current data
+                completionHandler(.failed)
                 print("Failed to retrieve UserInteraction from server  ",  error.localizedDescription)
             }
         }
     }
 
-
-}
+    
+    private func UIupdate() {
+        DispatchQueue.main.async { [weak self] in
+            self?.observer?.updateUI(timestamp: "dernière mise  à jour le \(Date().description(with: .current))")
+        }
+    }
+    
+} // end of class UserInteractionManager

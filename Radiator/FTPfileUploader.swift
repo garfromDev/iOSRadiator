@@ -31,13 +31,14 @@ struct FTPfileUploader : DistantFileManager {
     func push(data: Data, fileName: String) {
         print("pushing file to ftp...")
         ftp.writeContents(path: fileName, contents: data, overwrite: true) { (err : Error?) in
-            print(err?.localizedDescription ?? "FTP push Error")
+            print(err?.localizedDescription ?? "FTP push completed")
+            // error is nil if succesfull
         }
     }
     
     
     func pull(fileName: String, completion: @escaping DataCompletionHandler){
-        ftp.contents(path: "sample.txt") {
+        ftp.contents(path: fileName) {
             contents, error in
             if let contents = contents {
                 completion(.success(data:contents))

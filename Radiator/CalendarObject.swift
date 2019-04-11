@@ -10,11 +10,20 @@ enum Modes:String, Codable{
     case eco
 }
 
+/** description of setting for a day
+ keys are hours in 08:15 format, every 15 mn*/
 typealias DayCalendar = [Hours:Modes ]
+/** description of settings for the week
+ keys are days in full english (monday, ...) */
 typealias WeekCalendar = Dictionary<Days,DayCalendar>
+/** encapsulation of weekCalendar for compatibility
+ with python Radiatir, only key is : weekCalendar
+ */
 typealias CalendarObject   = [String:WeekCalendar]
 typealias CalendarName = String
 
+/** contient tous les calendriers disponibles
+*/
 struct Calendars:Codable {
     var currentCalendar : String
     var list : [CalendarName:CalendarObject]

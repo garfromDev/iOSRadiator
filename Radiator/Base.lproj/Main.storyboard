@@ -13,10 +13,17 @@
         <scene sceneID="9Ya-F8-Qiv">
             <objects>
                 <tableViewController id="7I5-EF-7Kj" customClass="MenuTableViewController" customModule="Radiator" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="gqx-lk-WJB">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="gqx-lk-WJB">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <label key="tableFooterView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="f8R-cN-UeU" userLabel="timestamp">
+                            <rect key="frame" x="0.0" y="372" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="8"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <sections>
                             <tableViewSection headerTitle="Mode " id="K6B-Rq-rgS">
                                 <cells>
@@ -102,6 +109,7 @@
                     <connections>
                         <outlet property="bonusSelector" destination="cab-je-6pp" id="x4M-7f-ftz"/>
                         <outlet property="modeChoiceSelector" destination="VDw-x2-Iph" id="bsi-oK-Dd5"/>
+                        <outlet property="timestampLabel" destination="f8R-cN-UeU" id="X8P-8G-aYH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Kh-Ks-FvT" userLabel="First Responder" sceneMemberID="firstResponder"/>

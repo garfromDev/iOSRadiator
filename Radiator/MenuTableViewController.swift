@@ -9,17 +9,27 @@
 // pour mixer dynamique, https://stackoverflow.com/questions/18153702/uitableview-mix-of-static-and-dynamic-cells
 import UIKit
 
+/** describe a controller that know how to update UI
+ timestamp is used to display last update time if needed
+ it is up to the caller to define what to pass
+ */
+protocol UI_Updatable {
+    func updateUI(timestamp:String)
+}
 
-class MenuTableViewController: UITableViewController, UserInteractionCapable {
+/** handle the main static table view */
+class MenuTableViewController: UITableViewController, UserInteractionCapable, UI_Updatable {
 
     let userInteractionManager : UserInteractionManager? = UserInteractionManager(distantFileManager: FTPfileUploader())
     
+    /** index for the Segmented Selector to choose heating mode */
     enum ModeSelectorIndex:Int {
         case eco = 0
         case confort = 1
         case calendar = 2
     }
 
+    /** index for the Segmented Selector to choose adjustement */
     enum BonusSelectorIndex:Int{
         case hot = 0
         case ok = 1
@@ -29,19 +39,22 @@ class MenuTableViewController: UITableViewController, UserInteractionCapable {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        updateUI()
+        updateUI(timestamp: "déclenché par viewDidAppear le \(Date().description(with: .current))")
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        // userInteractionManager will trigger UI_Update() upon model change
+        userInteractionManager?.observer = self as UI_Updatable
     }
-
+    
+    
     @IBOutlet weak var modeChoiceSelector: UISegmentedControl!
     @IBOutlet weak var bonusSelector: UISegmentedControl!
+    @IBOutlet weak var timestampLabel: UILabel!
     
-    
+    /** choice of heating mode */
     @IBAction func modeDidChange(_ sender: UISegmentedControl) {
         switch ModeSelectorIndex(rawValue: sender.selectedSegmentIndex)! {
         case .calendar: //calendrier
@@ -52,7 +65,7 @@ class MenuTableViewController: UITableViewController, UserInteractionCapable {
         userInteractionManager?.pushUpdate()
     }
     
-    
+    /** choice of adjustement */
     @IBAction func upDownDidChange(_ sender: UISegmentedControl) {
         userInteractionManager?.userInteraction.userBonus = DatedStatus()
         userInteractionManager?.userInteraction.userDown = DatedStatus()
@@ -74,9 +87,9 @@ extension MenuTableViewController{
     /**
     this method update the UI based on userInteractionManager data
     */
-    func updateUI(){
+    func updateUI(timestamp : String = ""){
         guard let uim = userInteractionManager?.userInteraction else {return}
-        
+        print("update UI with userInteraction : \(uim)")
         // -- The Heating Mode Selector
         if uim.calendarMode(){
             self.modeChoiceSelector.selectedSegmentIndex = ModeSelectorIndex.calendar.rawValue
@@ -86,6 +99,9 @@ extension MenuTableViewController{
             self.modeChoiceSelector.selectedSegmentIndex = ModeSelectorIndex.confort.rawValue
         }
         
+        // disable adjustement if heating mode eco
+        self.bonusSelector.isEnabled = !uim.ecoMode()
+        
         // the Adjustment Selector
         if uim.userDownActive(){
             self.bonusSelector.selectedSegmentIndex = BonusSelectorIndex.hot.rawValue
@@ -94,5 +110,7 @@ extension MenuTableViewController{
         }else{
             self.bonusSelector.selectedSegmentIndex = BonusSelectorIndex.ok.rawValue
         }
+        
+        self.timestampLabel.text = timestamp
     }
 }

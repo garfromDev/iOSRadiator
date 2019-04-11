@@ -6,7 +6,6 @@
 //  Copyright © 2018 garfromDev. All rights reserved.
 //
 
-// TODO: vérifier la jsonfification
 
 import Foundation
 
@@ -33,8 +32,13 @@ struct DatedStatus : Codable {
         return s
     }
 
+    /**
+     - return: the date of tomorrow (today + 24h.)
+     Expiration is resetted at midnight, that is a date is expired
+     as soon as the day 0 am is reached
+     */
     static func defaultExpirationDate()->Date{
-        return Date().midnight
+        return Date(timeIntervalSinceNow: 24*60*60)
     }
 }
 
@@ -46,23 +50,23 @@ struct UserInteraction : Codable{
 
 
 extension UserInteraction {
-    
+    // note : in case of jammed content, resulting mode
+    // would be calendar without adjustement
     mutating func setOverruleMode(_ mode:HeatingMode){
         self.overruled.status = true
         self.setDefaultExpirationDate()
         self.overruled.overMode = mode
     }
     
-    
     func confortMode()->Bool{
         return self.overruled.status &&
-        self.overruled.expirationDate <= Date() &&
+        isNotExpired(self.overruled.expirationDate) &&
         self.overruled.overMode == .confort
     }
     
     func ecoMode()->Bool{
         return self.overruled.status &&
-            self.overruled.expirationDate <= Date() &&
+            isNotExpired(self.overruled.expirationDate) &&
             self.overruled.overMode == .eco
     }
     
@@ -74,32 +78,48 @@ extension UserInteraction {
     
     func userBonusActive()->Bool{
         return self.userBonus.status &&
-            self.userBonus.expirationDate <= Date()
+            !self.ecoMode() &&
+            isNotExpired(self.userBonus.expirationDate)
     }
     
     func userDownActive()->Bool{
         return self.userDown.status &&
-            self.userDown.expirationDate <= Date()
+            !self.ecoMode() &&
+            isNotExpired(self.userDown.expirationDate)
     }
     
-    
+    /** encode UserInteraction into json with date format compatible with python Radiator
+    */
     func toJson() ->Data {
         let encoder = JSONEncoder()
         let formatter = DateFormatter()
         let dateFormat = DateFormatter.dateFormat(fromTemplate:"dd-MM-yyyy", options: 0, locale:Locale(identifier: "fr_FR"))
         formatter.dateFormat = dateFormat
-        // la date obtenu sera du type 01/01/2000 à cause de la local fr, à voir si ça passe avec les codages utf8
+        // la date obtenu sera du type 01/01/2000 à cause de la local fr, ça passe avec les codages utf8
         encoder.dateEncodingStrategy = .formatted(formatter)
         let data =  try! encoder.encode(self)
         return data
     }
     
+    
+    /** check validity of expiration date
+     date is expired as soon as 00:00 am of the day is reached
+     */
+    private func isNotExpired(_ expirationDate: Date)-> Bool{
+        let c = Calendar(identifier: .gregorian)
+        let expDay = c.component(.day, from: expirationDate)
+        let day = c.component(.day, from: Date())
+        return expDay > day
+    }
+    
+    /** decode json file to UserInteraction object from python generated or swift generated json
+     */
     static func fromJson(data:Data)->UserInteraction?{
         let decoder = JSONDecoder()
         let formatter = DateFormatter()
         let dateFormat = DateFormatter.dateFormat(fromTemplate:"dd-MM-yyyy", options: 0, locale:Locale(identifier: "fr_FR"))
         formatter.dateFormat = dateFormat
-        // la date obtenu sera du type 01/01/2000 à cause de la local fr, à voir si ça passe avec les codages utf8
+        // la date obtenu sera du type 01/01/2000 à cause de la local fr, ça passe avec les codages utf8
         decoder.dateDecodingStrategy = .formatted(formatter)
         if let usrInt =  try? decoder.decode(UserInteraction.self, from:data){
             return usrInt
@@ -109,16 +129,8 @@ extension UserInteraction {
     
     
     mutating func setDefaultExpirationDate(){
-        self.overruled.expirationDate = Date().midnight
+        self.overruled.expirationDate = Date(timeIntervalSinceNow: 24*60*60)
     }
     
  
-}
-
-
-extension Date{
-    var midnight:Date{
-        let cal = Calendar(identifier: .gregorian)
-        return cal.startOfDay(for: self)
-    }
 }

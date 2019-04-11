@@ -18,13 +18,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
 //        let u = UserInteraction()
 //        print(String(data: u.toJson(), encoding: .utf8)!)
+        
+        // launch BackgroundFetch mecanism
         application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         return true
     }
 
-    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: (UIBackgroundFetchResult) -> Void) {
+    /** response to background fetch
+     pull update from UserInteractionManager, it will trigger UI update
+     */
+    func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print("performFetchWithCompletionHandler")
         guard let mainController = window?.rootViewController as? UserInteractionCapable else {
             completionHandler(.failed)
+            print("fetch cancelled because no ViewControlelr")
             return
         }
         mainController.userInteractionManager?.pullUpdate(handler: completionHandler)
