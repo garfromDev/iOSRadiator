@@ -19,17 +19,17 @@ typealias DataCompletionHandler = (_ result:DataOperationResult)->Void
 
 
 struct FTPfileUploader : DistantFileManager {
-    private let ftp : FTPFileProvider
     
-    init(){
+    static func prepareFtp() -> FTPFileProvider{
         let cred = URLCredential(user: "fromontaline@orange.fr", password: "orange3310", persistence: .forSession)
-        ftp = FTPFileProvider(baseURL: URL(string: "ftp://perso-ftp.orange.fr/Applications/Radiator")!, mode: .default, credential: cred, cache: nil)!
+        let ftp = FTPFileProvider(baseURL: URL(string: "ftpes://perso-ftp.orange.fr/Applications/Radiator")!, mode: .passive, credential: cred, cache: nil)!
         ftp.serverTrustPolicy = .disableEvaluation
+        return ftp
     }
-    
     
     func push(data: Data, fileName: String) {
         print("pushing file to ftp...")
+        let ftp = FTPfileUploader.prepareFtp()
         ftp.writeContents(path: fileName, contents: data, overwrite: true) { (err : Error?) in
             print(err?.localizedDescription ?? "FTP push completed")
             // error is nil if succesfull
@@ -38,6 +38,7 @@ struct FTPfileUploader : DistantFileManager {
     
     
     func pull(fileName: String, completion: @escaping DataCompletionHandler){
+        let ftp = FTPfileUploader.prepareFtp()
         ftp.contents(path: fileName) {
             contents, error in
             if let contents = contents {

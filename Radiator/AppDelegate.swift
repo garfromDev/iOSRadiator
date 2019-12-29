@@ -54,6 +54,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+        guard let controller = UIApplication.topMostUpdatableViewController else {return}
+        controller.updateUI(timestamp: "déclenché par didBecomeAxctive le \(Date().description(with: .current))")
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -61,5 +63,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
 
+}
+
+
+extension UIApplication {
+    /// will return currently showing view controller
+    static var topMostUpdatableViewController: UI_Updatable? {
+        return UIApplication.shared.keyWindow?.rootViewController?.updatableViewController
+    }
 }
 

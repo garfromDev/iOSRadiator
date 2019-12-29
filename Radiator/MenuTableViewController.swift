@@ -8,6 +8,7 @@
 
 // pour mixer dynamique, https://stackoverflow.com/questions/18153702/uitableview-mix-of-static-and-dynamic-cells
 import UIKit
+import FilesProvider
 
 /** describe a controller that know how to update UI
  timestamp is used to display last update time if needed
@@ -16,6 +17,26 @@ import UIKit
 protocol UI_Updatable {
     func updateUI(timestamp:String)
 }
+
+extension UIViewController {
+     /// The visible view controller from a given view controller
+     var updatableViewController: UI_Updatable? {
+         if let navigationController = self as? UINavigationController {
+            if let cont = navigationController.topViewController?.updatableViewController {
+                return cont
+            }
+         } else if let tabBarController = self as? UITabBarController {
+            if let cont = tabBarController.selectedViewController?.updatableViewController {
+                return cont
+            }
+         } else if let presentedViewController = presentedViewController as? UI_Updatable {
+            return presentedViewController
+         } else if let cont = self as? UI_Updatable{
+             return cont
+         }
+        return nil
+     }
+ }
 
 /** handle the main static table view */
 class MenuTableViewController: UITableViewController, UserInteractionCapable, UI_Updatable {
@@ -112,5 +133,22 @@ extension MenuTableViewController{
         }
         
         self.timestampLabel.text = timestamp
+    }
+}
+
+
+extension MenuTableViewController: FileProviderDelegate
+{
+    func fileproviderFailed(_ fileProvider: FileProviderOperations, operation: FileOperationType, error: Error) {
+        let msg = "\(operation.actionDescription) from \(operation.source) to \(operation.destination ?? "") failed"
+        print(msg)
+        let alertController = UIAlertController(title: "Radiator", message: msg, preferredStyle: .alert)
+        self.present(alertController, animated:true)
+    }
+    
+    func fileproviderSucceed(_ fileProvider: FileProviderOperations, operation: FileOperationType){
+    }
+    
+    func fileproviderProgress(_ fileProvider: FileProviderOperations, operation: FileOperationType, progress: Float) {
     }
 }
