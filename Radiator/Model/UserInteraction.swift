@@ -121,10 +121,7 @@ extension UserInteraction {
         formatter.dateFormat = dateFormat
         // la date obtenu sera du type 01/01/2000 à cause de la local fr, ça passe avec les codages utf8
         decoder.dateDecodingStrategy = .formatted(formatter)
-        if let usrInt =  try? decoder.decode(UserInteraction.self, from:data){
-            return usrInt
-        }
-        return nil
+        return  try? decoder.decode(UserInteraction.self, from:data)
     }
     
     

@@ -8,6 +8,28 @@
 
 import UIKit
 
+/*
+ APP STRUCTURE
+ the source of truth are the distant files (today in FTP repo)
+ There is one instance of UserInteractionManager (UIM) (global var)
+ All controllers get the model from the UIM
+ All controllers locally update model in response to user action and push to UIM
+ UIM pull from distant repo (Backgroundfetch or other mechanism) and triggers
+ UIUpdate notification.
+ controller refresh model from UIM and update their UI upon this notification
+ 
+ Principles :
+ controllers are as light as possible
+ they are specific to the app
+ they know the model, all interactions through UIM
+ it means we can change the distant file structure (REST instead of FTP, od even SQL) without impact
+ UIM do not need to know how many controller, which can of UI ...
+ */
+
+// global singleton to handle all interaction with other Apps and Radiator devices
+let userInteractionManager = UserInteractionManager(distantFileManager: FTPfileUploader())
+
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -21,6 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // launch BackgroundFetch mecanism
         application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
+        UIApplication.topMostUpdatableViewController?.updateUI(timestamp: "déclenché par launch le \(Date().description(with: .current))")
         return true
     }
 

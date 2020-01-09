@@ -137,6 +137,7 @@ extension MenuTableViewController{
 }
 
 
+// protocol to work with FTP file provider
 extension MenuTableViewController: FileProviderDelegate
 {
     func fileproviderFailed(_ fileProvider: FileProviderOperations, operation: FileOperationType, error: Error) {
@@ -152,3 +153,6 @@ extension MenuTableViewController: FileProviderDelegate
     func fileproviderProgress(_ fileProvider: FileProviderOperations, operation: FileOperationType, progress: Float) {
     }
 }
+
+
+
