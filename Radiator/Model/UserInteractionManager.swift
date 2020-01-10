@@ -71,20 +71,28 @@ class UserInteractionManager:NSObject{
     
     
     func pullCalendars(){
+        self.distantFileManager.pull(fileName: Files.calendars){
+            (result:DataOperationResult) in
+            switch result{
+                case .success(let data):
+                    print("Distant file manager has got calendars datas")
+                    if let newcalendars = Calendars.fromJson(data){
+                        self.calendars = newcalendars
+                        completionHandler(Result.success(newcalendars))
+                        print("UserInteractionManager.calendars has new value \(newUsrInteraction)")
+                        self.UIupdate()
+                }
+                case .failure(let error):
+                    // in case of failure, we keep current data
+                    completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                    print("Failed to retrieve UserInteraction from server  ",  error.localizedDescription)
+            }
             
+        }
     }
     
-    
-    func pullCalendars(){
-        
-    }
-    
-    func pullUserInteraction(){
-        // call pullUpdate with a dummy handler, for local triggered update
-        pullUserInteraction(handler:{(res:UIBackgroundFetchResult) in })
-    }
-    
-    /// normal method to retrieve UserInteraction object
+
+    /// normal method to retrieve UserInteraction object, using handler
     func pullUserInteraction(handler completionHandler: @escaping (Result<UserInteraction, IOError>  ) -> Void){
         self.distantFileManager.pull(fileName: Files.userInteraction){
             (result:DataOperationResult) in
@@ -102,11 +110,13 @@ class UserInteractionManager:NSObject{
                     completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
                     print("Failed to retrieve UserInteraction from server  ",  error.localizedDescription)
             }
-        
-    }
+            
+        }
     }
     
-    /// method to be called by BackgroundFetch mecanism
+    /** method to be called by BackgroundFetch mecanism.
+     Will make synchro pull request and call completion handler
+     */
     func pull(handler completionHandler: @escaping (UIBackgroundFetchResult) -> Void){
         print("UserInteractionManager pulling update")
         var failed = false
@@ -131,11 +141,11 @@ class UserInteractionManager:NSObject{
         completionHandler(.newData)
     }
 
-        
+    /**
+        will pull new data and called UI refreshing asynchonously
+     */
     func refresh(){
-        self.pullUserInteraction()
-        // self.pullCalendars()
-        self.UIupdate()
+        self.pull() { _ in self.UIupdate() }
     }
     
     
