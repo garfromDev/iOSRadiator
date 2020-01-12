@@ -48,6 +48,8 @@ On check régulièrement si apparition de changement (via le système de fetch)
 class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
     var calendars : Calendars = Calendars()
+    // singleton
+    static let shared = UserInteractionManager(distantFileManager: FTPfileUploader())
     static let updateUInotification = Notification.Name("updateUI")
     enum IOError: Error {
         case IOerror(msg: String)
@@ -58,19 +60,20 @@ class UserInteractionManager:NSObject{
     init(distantFileManager: DistantFileManager){
         self.distantFileManager = distantFileManager
         super.init()
-        self.pullUpdate()
+        self.refresh()
     }
     
     
     func pushUpdate(){
         self.distantFileManager.push(data:self.userInteraction.toJson(),
                                      fileName: Files.userInteraction)
-        //self.distantFileManager.push(data: self.calendars.toJson(), fileName: Files.calendars)
+        self.distantFileManager.push(data: self.calendars.toJson(),
+                                     fileName: Files.calendars)
         self.UIupdate()
     }
     
     
-    func pullCalendars(){
+    func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void){
         self.distantFileManager.pull(fileName: Files.calendars){
             (result:DataOperationResult) in
             switch result{
@@ -79,13 +82,13 @@ class UserInteractionManager:NSObject{
                     if let newcalendars = Calendars.fromJson(data){
                         self.calendars = newcalendars
                         completionHandler(Result.success(newcalendars))
-                        print("UserInteractionManager.calendars has new value \(newUsrInteraction)")
+                        print("UserInteractionManager.calendars has new value \(newcalendars)")
                         self.UIupdate()
                 }
                 case .failure(let error):
                     // in case of failure, we keep current data
                     completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                    print("Failed to retrieve UserInteraction from server  ",  error.localizedDescription)
+                    print("Failed to retrieve Calendars from server  ",  error.localizedDescription)
             }
             
         }

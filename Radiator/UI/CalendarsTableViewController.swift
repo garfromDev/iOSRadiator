@@ -12,8 +12,8 @@ import UIKit
 class CalendarsTableViewController: UITableViewController {
     let calendars: Calendars
     
-    func viewDidLoad(){
+    override func viewDidLoad(){
         super.viewDidLoad()
-        self.calendars = Calendars.fromJson(
+        self.calendars = Calendars.fromJson()
     }
 }

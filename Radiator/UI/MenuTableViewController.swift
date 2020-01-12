@@ -39,9 +39,9 @@ extension UIViewController {
  }
 
 /** handle the main static table view */
-class MenuTableViewController: UITableViewController, UserInteractionCapable, UI_Updatable {
+class MenuTableViewController: UITableViewController, UserInteractionCapable  {
 
-    let userInteractionManager : UserInteractionManager? = UserInteractionManager(distantFileManager: FTPfileUploader())
+    weak var userInteractionManager : UserInteractionManager? = UserInteractionManager.shared
     
     /** index for the Segmented Selector to choose heating mode */
     enum ModeSelectorIndex:Int {
@@ -61,13 +61,6 @@ class MenuTableViewController: UITableViewController, UserInteractionCapable, UI
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateUI(timestamp: "déclenché par viewDidAppear le \(Date().description(with: .current))")
-    }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // userInteractionManager will trigger UI_Update() upon model change
-        userInteractionManager?.observer = self as UI_Updatable
     }
     
     
@@ -104,7 +97,23 @@ class MenuTableViewController: UITableViewController, UserInteractionCapable, UI
     
 }
 
-extension MenuTableViewController{
+extension MenuTableViewController: UI_Updatable{
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // userInteractionManager will trigger UI_Update() upon model change
+        _ = NotificationCenter.default.addObserver(self, selector: #selector(triggerUpdateUI(_:))
+            , name: UserInteractionManager.updateUInotification,
+            object : nil)
+    }
+    
+    // need @objc because called by NotificationCenter
+    @objc
+    func triggerUpdateUI( _ notification:Notification){
+        DispatchQueue.main.async(execute:{self.updateUI()})
+    }
+    
+    
     /**
     this method update the UI based on userInteractionManager data
     */
