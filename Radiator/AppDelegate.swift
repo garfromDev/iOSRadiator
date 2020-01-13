@@ -11,7 +11,7 @@ import UIKit
 /*
  APP STRUCTURE
  the source of truth are the distant files (today in FTP repo)
- There is one instance of UserInteractionManager (UIM) (global var)
+ There is one instance of UserInteractionManager (UIM) (singleton)
  All controllers get the model from the UIM
  All controllers locally update model in response to user action and push to UIM
  UIM pull from distant repo (Backgroundfetch or other mechanism) and triggers
@@ -26,24 +26,17 @@ import UIKit
  UIM do not need to know how many controller, which can of UI ...
  */
 
-// global singleton to handle all interaction with other Apps and Radiator devices
-let userInteractionManager = UserInteractionManager(distantFileManager: FTPfileUploader())
-
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    let userInteractionManager = UserInteractionManager.shared
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
-//        let u = UserInteraction()
-//        print(String(data: u.toJson(), encoding: .utf8)!)
-        
         // launch BackgroundFetch mecanism
         application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
-        UIApplication.topMostUpdatableViewController?.updateUI(timestamp: "déclenché par launch le \(Date().description(with: .current))")
+        
+        userInteractionManager.refresh()
         return true
     }
 
@@ -52,12 +45,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      */
     func application(_ application: UIApplication, performFetchWithCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print("performFetchWithCompletionHandler")
-        guard let mainController = window?.rootViewController as? UserInteractionCapable else {
-            completionHandler(.failed)
-            print("fetch cancelled because no ViewControlelr")
-            return
+        UserInteractionManager.shared.pull() { result in
+            completionHandler(result)
+            switch result{
+                case .newData: // we trigger UI update because pull does not
+                    self.userInteractionManager.UIupdate()
+                default:
+                    break
+            }
         }
-        mainController.userInteractionManager?.pullUpdate(handler: completionHandler)
     }
     
     
@@ -77,8 +73,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        guard let controller = UIApplication.topMostUpdatableViewController else {return}
-        controller.updateUI(timestamp: "déclenché par didBecomeAxctive le \(Date().description(with: .current))")
+        userInteractionManager.refresh()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -88,7 +83,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
-
+// TODO: a supprimer?
 extension UIApplication {
     /// will return currently showing view controller
     static var topMostUpdatableViewController: UI_Updatable? {

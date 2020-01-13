@@ -52,17 +52,17 @@ struct FTPfileUploader : DistantFileManager {
     /* trick from https://medium.com/@michaellong/how-to-chain-api-calls-using-swift-5s-new-result-type-and-gcd-56025b51033c
     to transform async into sync call.
      */
-    func pullSync(filename: String) -> DataOperationResult {
-        var pullResult: DataOperationResult
+    func pullSync(fileName: String) -> DataOperationResult {
+        var pullResult : DataOperationResult?
         let semaphore = DispatchSemaphore(value: 0)
         DispatchQueue.global(qos: .utility).async{
-            self.pull(fileName: filename) {result in
+            self.pull(fileName: fileName) {result in
                 pullResult = result
                 semaphore.signal()
             }
         }
         _ = semaphore.wait(timeout: .distantFuture)
-        return pullResult
+        return pullResult!
     }
     
 }

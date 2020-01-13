@@ -10,10 +10,13 @@ import Foundation
 import UIKit
 
 class CalendarsTableViewController: UITableViewController {
-    let calendars: Calendars
+    var calendars: Calendars
+    let uim = UserInteractionManager.shared
     
     override func viewDidLoad(){
         super.viewDidLoad()
-        self.calendars = Calendars.fromJson()
+        self.calendars = uim.calendars
+        self.tableView.dataSource = calendars
     }
+    
 }
