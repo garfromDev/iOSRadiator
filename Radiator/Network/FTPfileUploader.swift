@@ -10,16 +10,21 @@ import Foundation
 import FilesProvider
 
 // voir https://github.com/amosavian/FileProvider/blob/master/Sources/FTPFileProvider.swift
-enum DataOperationResult{
-    case success(data:Data)
-    case failure(error:Error)
-}
+//enum DataOperationResult{
+//    case success(data:Data)
+//    case failure(error:Error)
+//}
+typealias DataOperationResult = Result<Data,Error>
 
 typealias DataCompletionHandler = (_ result:DataOperationResult)->Void
 
 
 struct FTPfileUploader : DistantFileManager {
     
+    var defaultErrorHandler = { (err : Error?) in
+        print(err?.localizedDescription ?? "FTP push completed")
+        // error is nil if succesfull
+    }
     static func prepareFtp() -> FTPFileProvider{
         let cred = URLCredential(user: "fromontaline@orange.fr", password: "orange3310", persistence: .forSession)
         let ftp = FTPFileProvider(baseURL: URL(string: "ftpes://perso-ftp.orange.fr/Applications/Radiator")!, mode: .passive, credential: cred, cache: nil)!
@@ -27,24 +32,35 @@ struct FTPfileUploader : DistantFileManager {
         return ftp
     }
     
+    init(){
+        
+    }
+    init(errorHandler: @escaping(Error?)->Void){
+        self.defaultErrorHandler = errorHandler
+    }
+    
+    
     func push(data: Data, fileName: String) {
         print("pushing file to ftp...")
         let ftp = FTPfileUploader.prepareFtp()
-        ftp.writeContents(path: fileName, contents: data, overwrite: true) { (err : Error?) in
-            print(err?.localizedDescription ?? "FTP push completed")
-            // error is nil if succesfull
-        }
+        ftp.writeContents(path: fileName, contents: data, overwrite: true, completionHandler: defaultErrorHandler)
     }
     
     
     func pull(fileName: String, completion: @escaping DataCompletionHandler){
         let ftp = FTPfileUploader.prepareFtp()
+        print("FTP fileuploader pulling \(fileName)")
         ftp.contents(path: fileName) {
             contents, error in
+            print("FTP fileuploader got pulling response for \(fileName)")
             if let contents = contents {
-                completion(.success(data:contents))
+                print("FTP fileuploader sucess  for \(fileName)")
+                completion(.success(contents))
             }else{
-                completion(.failure(error:error!))
+                print("FTP fileuploader error for \(fileName) :" + "\(String(describing:error?.localizedDescription)) -" +
+                    "\(String(describing:(error as NSError?)?.localizedRecoverySuggestion))" +
+                    "\(String(describing:(error as NSError?)?.localizedFailureReason))")
+                completion(.failure(error!))
             }
         }
     }

@@ -24,6 +24,11 @@ import UIKit
  they know the model, all interactions through UIM
  it means we can change the distant file structure (REST instead of FTP, od even SQL) without impact
  UIM do not need to know how many controller, which can of UI ...
+ 
+ Dans notre cas, l'utilisation d'un singleton est pertinente car l'application n'a pas d'état propre,
+ tout est stocké dans les fichiers (reste à voir comment gérer l'édition des calendriers
+ sino, il aurait mieux valu injecter le UiManager en dépendnace cf https://code.tutsplus.com/fr/tutorials/the-right-way-to-share-state-between-swift-view-controllers--cms-28474
+ 
  */
 
 @UIApplicationMain
@@ -36,7 +41,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // launch BackgroundFetch mecanism
         application.setMinimumBackgroundFetchInterval(UIApplication.backgroundFetchIntervalMinimum)
         
-        userInteractionManager.refresh()
+//        userInteractionManager.refresh()
         return true
     }
 
@@ -73,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        userInteractionManager.refresh()
+//        userInteractionManager.refresh()
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

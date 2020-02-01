@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class CalendarsTableViewController: UITableViewController {
-    var calendars: Calendars
+    var calendars: Calendars?
     let uim = UserInteractionManager.shared
     
     override func viewDidLoad(){
@@ -19,4 +19,11 @@ class CalendarsTableViewController: UITableViewController {
         self.tableView.dataSource = calendars
     }
     
+}
+
+
+extension CalendarsTableViewController: UI_Updatable {
+    func updateUI(timestamp: String) {
+        self.tableView?.reloadData()
+    }
 }

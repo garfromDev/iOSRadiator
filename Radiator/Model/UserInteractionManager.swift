@@ -9,11 +9,6 @@
 import Foundation
 import UIKit
 
-/// utility of this protocol not clear
-protocol UserInteractionCapable{
-    var userInteractionManager: UserInteractionManager? {get}
-}
-
 /** describe an object capable of pushing / retrieving file from distant system */
 protocol DistantFileManager{
     func push(data:Data, fileName:String)
@@ -23,7 +18,7 @@ protocol DistantFileManager{
 
 /** constant for files used in Radiator */
 struct Files{
-    static let userInteraction = "userInteraction.json"
+    static let userInteraction = "userinteraction.json"
     static let calendars = "calendars.json"
     static let currentStatus = "currentStatus.json"
 }
@@ -39,6 +34,8 @@ On check régulièrement si apparition de changement (via le système de fetch)
  un fichier currentStatus.json contenant les infos remonté par la raspberry (lecture uniquement)
 */
 
+
+
 /**
  controller must add itself to observer to get UI_Update() notification
  controller fetch and set  userInteraction data using UserInteraction method
@@ -49,20 +46,20 @@ class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
     var calendars : Calendars = Calendars()
     // singleton
-    static let shared = UserInteractionManager(distantFileManager: FTPfileUploader())
+    static var shared = UserInteractionManager(distantFileManager: FTPfileUploader())
     static let updateUInotification = Notification.Name("updateUI")
     enum IOError: Error {
         case IOerror(msg: String)
     }
-    
+    private let semaphore = DispatchSemaphore(value: 0)
     private let distantFileManager : DistantFileManager
-    
+
     init(distantFileManager: DistantFileManager){
         self.distantFileManager = distantFileManager
         super.init()
-        self.refresh()
+        // self.refresh()
     }
-    
+
     
     func pushUpdate(){
         self.distantFileManager.push(data:self.userInteraction.toJson(),
@@ -74,6 +71,8 @@ class UserInteractionManager:NSObject{
     
     
     func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void){
+        fatalError()
+        print("userIntercationManager async pulling calendars")
         self.distantFileManager.pull(fileName: Files.calendars){
             (result:DataOperationResult) in
             switch result{
@@ -97,11 +96,12 @@ class UserInteractionManager:NSObject{
 
     /// normal method to retrieve UserInteraction object, using handler
     func pullUserInteraction(handler completionHandler: @escaping (Result<UserInteraction, IOError>  ) -> Void){
+        print("UserInteractionManager pulling async Userinteraction")
         self.distantFileManager.pull(fileName: Files.userInteraction){
             (result:DataOperationResult) in
             switch result{
                 case .success(let data):
-                    print("Distant file manager has got datas")
+                    print("Distant file manager has got datas for user interaction")
                     if let newUsrInteraction = UserInteraction.fromJson(data: data){
                         self.userInteraction = newUsrInteraction
                         completionHandler(Result.success(newUsrInteraction))
@@ -121,7 +121,7 @@ class UserInteractionManager:NSObject{
      Will make synchro pull request and call completion handler
      */
     func pull(handler completionHandler: @escaping (UIBackgroundFetchResult) -> Void){
-        print("UserInteractionManager pulling update")
+        print("UserInteractionManager pulling update sync")
         var failed = false
         // get new value of UserInteraction
         var result = self.distantFileManager.pullSync(fileName: Files.userInteraction)
@@ -148,7 +148,9 @@ class UserInteractionManager:NSObject{
         will pull new data and called UI refreshing asynchonously
      */
     func refresh(){
-        self.pull() { _ in self.UIupdate() }
+        fatalError()
+        self.pullUserInteraction() { _ in self.UIupdate() }
+        self.pullCalendars() { _ in self.UIupdate() }
     }
     
     

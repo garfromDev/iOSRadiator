@@ -20,7 +20,7 @@ protocol UI_Updatable {
 
 extension UIViewController {
      /// The visible view controller from a given view controller
-     var updatableViewController: UI_Updatable? {
+    var updatableViewController: UI_Updatable? {
          if let navigationController = self as? UINavigationController {
             if let cont = navigationController.topViewController?.updatableViewController {
                 return cont
@@ -39,7 +39,7 @@ extension UIViewController {
  }
 
 /** handle the main static table view */
-class MenuTableViewController: UITableViewController, UserInteractionCapable  {
+class MenuTableViewController: UITableViewController  {
 
     weak var userInteractionManager : UserInteractionManager? = UserInteractionManager.shared
     
@@ -101,6 +101,7 @@ extension MenuTableViewController: UI_Updatable{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("")
         // userInteractionManager will trigger UI_Update() upon model change
         _ = NotificationCenter.default.addObserver(self, selector: #selector(triggerUpdateUI(_:))
             , name: UserInteractionManager.updateUInotification,
