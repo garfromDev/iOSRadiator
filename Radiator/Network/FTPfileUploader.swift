@@ -71,8 +71,11 @@ struct FTPfileUploader : DistantFileManager {
     func pullSync(fileName: String) -> DataOperationResult {
         var pullResult : DataOperationResult?
         let semaphore = DispatchSemaphore(value: 0)
+        print("pullsync launchind async")
         DispatchQueue.global(qos: .utility).async{
+            print("async bloc calling pull")
             self.pull(fileName: fileName) {result in
+                print("got result from pull")
                 pullResult = result
                 semaphore.signal()
             }

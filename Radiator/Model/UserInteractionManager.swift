@@ -125,6 +125,7 @@ class UserInteractionManager:NSObject{
         var failed = false
         // get new value of UserInteraction
         var result = self.distantFileManager.pullSync(fileName: Files.userInteraction)
+        print("result from pullsync userInteraction")
         switch result {
             case .success(let usrInteraction):
                 self.userInteraction = UserInteraction.fromJson(data: usrInteraction) ?? self.userInteraction
@@ -132,6 +133,7 @@ class UserInteractionManager:NSObject{
                 failed = true
         }
         result = self.distantFileManager.pullSync(fileName: Files.calendars)
+        print("result from pullsync calendars")
         switch result {
             case .success(let cldrs):
                 self.calendars = Calendars.fromJson(cldrs) ?? self.calendars
