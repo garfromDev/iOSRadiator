@@ -99,6 +99,24 @@ class CalendarsTests: XCTestCase {
         wait(for: [positive_response], timeout: 20)
     }
 
+    
+    func test40CalendarFromserver() {
+        // get UserInteraction from server through UserInteractionManager
+        let got_response = XCTestExpectation(description: "40_got response")
+        let positive_response = XCTestExpectation(description: "40_positive_answer")
+        
+        UserInteractionManager.shared.pullCalendars() { result in
+            got_response.fulfill()
+            switch result{
+                case .success(_):
+                    positive_response.fulfill()
+                case .failure(let error):
+                    XCTFail("pullUserInteraction answered error \(error.localizedDescription)")
+            }
+        }
+        wait(for: [got_response, positive_response], timeout: 20)
+    }
+    
 
 // MARK: Datasource
     func testDataSOurce() {
