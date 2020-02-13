@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import os
 import UIKit
 
 /** describe an object capable of pushing / retrieving file from distant system */
@@ -24,15 +25,15 @@ struct Files{
 }
 
 /*
-Principe de fonctionnement de l'application
-a l'apparition de la vue, charger la liste des calendrier, le calendrier courant, le userStatus courant, les infos courantes
-Si modification par l'utilisateur, on push le modèle
-On check régulièrement si apparition de changement (via le système de fetch)
+ Principe de fonctionnement de l'application
+ a l'apparition de la vue, charger la liste des calendrier, le calendrier courant, le userStatus courant, les infos courantes
+ Si modification par l'utilisateur, on push le modèle
+ On check régulièrement si apparition de changement (via le système de fetch)
  Les infos sont contenus dans :
  un fichier UserInteraction.json pour les overrules
  un fichiers calendars.json, contenant les différents CalendarObject et le nom du calendar actif
  un fichier currentStatus.json contenant les infos remonté par la raspberry (lecture uniquement)
-*/
+ */
 
 
 
@@ -41,7 +42,7 @@ On check régulièrement si apparition de changement (via le système de fetch)
  controller fetch and set  userInteraction data using UserInteraction method
  controller triggers push to distant file, this will trigger UI update as well
  pull is also triggered by Backgroundfetch mecanism, defined in AppDelegate
-*/
+ */
 class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
     var calendars : Calendars = Calendars()
@@ -51,17 +52,22 @@ class UserInteractionManager:NSObject{
     enum IOError: Error {
         case IOerror(msg: String)
     }
-    private let dfAccessSemaphore = DispatchSemaphore(value: 0)
+    private let dfAccessSemaphore = DispatchSemaphore(value: 1) // first wait will bring gown to zero, blocking further wait
     private let sendRequestQueue = DispatchQueue(label:"sendRequestQueue", qos: .userInitiated)
     private let handleCallbackQueue = DispatchQueue(label:"handleCallbackQueue", qos: .userInitiated)
     private let distantFileManager : DistantFileManager
+    private let log : OSLog!
     
     init(distantFileManager: DistantFileManager){
         self.distantFileManager = distantFileManager
+        if #available(iOS 10.0, *) {
+            log = OSLog.init(subsystem: "fr.garfromdev.radiator", category: "UserInteractionManager")
+        }else{
+            log = nil
+        }
         super.init()
-        // self.refresh()
     }
-
+    
     
     func pushUpdate(){
         self.distantFileManager.push(data:self.userInteraction.toJson(),
@@ -73,94 +79,91 @@ class UserInteractionManager:NSObject{
     
     
     func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void){
-        print("userIntercationManager async pulling calendars")
         sendRequestQueue.async {
             // first wait that any opened ftp Operation is finished
-            self.dfAccessSemaphore.wait(timeout: .now() + 20)
+            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
             self.handleCallbackQueue.async(){
                 //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
                 self.distantFileManager.pull(fileName: Files.calendars){
                     (result:DataOperationResult) in
                     self.dfAccessSemaphore.signal() // release access for next operation
                     switch result{
-                        case .success(let data):
-                            print("Distant file manager has got calendars datas")
-                            if let newcalendars = Calendars.fromJson(data){
-                                self.calendars = newcalendars
-                                completionHandler(Result.success(newcalendars))
-                                print("UserInteractionManager.calendars has new value \(newcalendars)")
-                                self.UIupdate()
+                    case .success(let data):
+                        if let newcalendars = Calendars.fromJson(data){
+                            self.calendars = newcalendars
+                            completionHandler(Result.success(newcalendars))
+                            self.UIupdate()
                         }
-                        case .failure(let error):
-                            // in case of failure, we keep current data
-                            completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                            print("Failed to retrieve Calendars from server  ",  error.localizedDescription)
+                    case .failure(let error):
+                        // in case of failure, we keep current data
+                        completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                        if #available(iOS 10.0, *) {
+                            os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
+                        } else {
+                            print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
+                        }
                     } //end switch
                 } //end pull call back
             } // end handleCallBackQueue
         } //end requestQueue
     } // end pull function
     
-
+    
     /// normal method to retrieve UserInteraction object, using handler
     func pullUserInteraction(handler completionHandler: @escaping (Result<UserInteraction, IOError>  ) -> Void){
-        print("UserInteractionManager pulling async Userinteraction")
-        self.distantFileManager.pull(fileName: Files.userInteraction){
-            (result:DataOperationResult) in
-            switch result{
-                case .success(let data):
-                    print("Distant file manager has got datas for user interaction")
-                    if let newUsrInteraction = UserInteraction.fromJson(data: data){
-                        self.userInteraction = newUsrInteraction
-                        completionHandler(Result.success(newUsrInteraction))
-                        print("UserInteractionManager.userinteraction has new value \(newUsrInteraction)")
-                        self.UIupdate()
+        sendRequestQueue.async {
+            // first wait that any opened ftp Operation is finished
+            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
+            self.handleCallbackQueue.async(){
+                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                self.distantFileManager.pull(fileName: Files.userInteraction){
+                    (result:DataOperationResult) in
+                    self.dfAccessSemaphore.signal() // release access for next operation
+                    switch result{
+                    case .success(let data):
+                        if let newUsrInteraction = UserInteraction.fromJson(data: data){
+                            self.userInteraction = newUsrInteraction
+                            completionHandler(Result.success(newUsrInteraction))
+                            self.UIupdate()
+                        }
+                    case .failure(let error):
+                        // in case of failure, we keep current data
+                        completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                        if #available(iOS 10.0, *) {
+                            os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
+                        } else {
+                            print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
+                        }
+                    }
                 }
-                case .failure(let error):
-                    // in case of failure, we keep current data
-                    completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                    print("Failed to retrieve UserInteraction from server  ",  error.localizedDescription)
             }
-            
         }
     }
     
     /** method to be called by BackgroundFetch mecanism.
-     Will make synchro pull request and call completion handler
+     Will make  pull request and call completion handler after getting last result
      */
     func pull(handler completionHandler: @escaping (UIBackgroundFetchResult) -> Void){
-        print("UserInteractionManager pulling update sync")
-        var failed = false
-        // get new value of UserInteraction
-        var result = self.distantFileManager.pullSync(fileName: Files.userInteraction)
-        print("result from pullsync userInteraction")
-        switch result {
-            case .success(let usrInteraction):
-                self.userInteraction = UserInteraction.fromJson(data: usrInteraction) ?? self.userInteraction
-            case .failure:
-                failed = true
+        self.pullCalendars() {
+            result in return
         }
-        result = self.distantFileManager.pullSync(fileName: Files.calendars)
-        print("result from pullsync calendars")
-        switch result {
-            case .success(let cldrs):
-                self.calendars = Calendars.fromJson(cldrs) ?? self.calendars
+        self.pullUserInteraction() {
+            result in
+            switch result {
+            case .success(_):
+                completionHandler(.newData)
             case .failure:
-                if failed { // we consider failed if both pull have failed
-                    completionHandler(.failed)
-                    return
+                completionHandler(.failed)
             }
         }
-        completionHandler(.newData)
     }
-
+    
     /**
-        will pull new data and called UI refreshing asynchonously
+     will pull new data and called UI refreshing asynchonously
      */
     func refresh(){
-        fatalError()
-        self.pullUserInteraction() { _ in self.UIupdate() }
-        self.pullCalendars() { _ in self.UIupdate() }
+        self.pullUserInteraction() { _ in return }
+        self.pullCalendars() { _ in self.UIupdate() } // because of serial mechanism, will be executed last
     }
     
     

@@ -117,6 +117,38 @@ class CalendarsTests: XCTestCase {
         wait(for: [got_response, positive_response], timeout: 20)
     }
     
+    
+    func test50TripleCallFromserver() {
+        // make 3 request without waiting, serial mechanism of userInteraction should protect against too many connexions
+        let positive_response1 = XCTestExpectation(description: "50_positive_answer1")
+        let positive_response2 = XCTestExpectation(description: "50_positive_answer1")
+        let positive_response3 = XCTestExpectation(description: "50_positive_answer1")
+         UserInteractionManager.shared.pullCalendars() { result in
+             switch result{
+                 case .success(_):
+                     positive_response1.fulfill()
+                 case .failure(let error):
+                     XCTFail("pullUserInteraction 1 answered error \(error.localizedDescription)")
+             }
+         }
+        UserInteractionManager.shared.pullCalendars() { result in
+            switch result{
+                case .success(_):
+                    positive_response2.fulfill()
+                case .failure(let error):
+                    XCTFail("pullUserInteraction 2 answered error \(error.localizedDescription)")
+            }
+        }
+        UserInteractionManager.shared.pullCalendars() { result in
+            switch result{
+                case .success(_):
+                    positive_response3.fulfill()
+                case .failure(let error):
+                    XCTFail("pullUserInteraction 3 answered error \(error.localizedDescription)")
+            }
+        }
+         wait(for: [positive_response1, positive_response2, positive_response3], timeout: 40)
+    }
 
 // MARK: Datasource
     func testDataSOurce() {
