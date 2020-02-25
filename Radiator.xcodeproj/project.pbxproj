@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		300741B821DBE35A008BFFAA /* FTPfileUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300741B721DBE35A008BFFAA /* FTPfileUploader.swift */; };
 		301DDA3823C12CAE00B96AC5 /* CalendarsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301DDA3723C12CAE00B96AC5 /* CalendarsTableViewController.swift */; };
+		3033470923FF309600B5EB74 /* MainMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3033470823FF309600B5EB74 /* MainMenuController.swift */; };
 		3037CAAE23B921440071CAE1 /* CalendarTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3037CAAD23B921440071CAE1 /* CalendarTableView.swift */; };
 		3037CAB923B94A430071CAE1 /* radiatorTestPlayground.h in Headers */ = {isa = PBXBuildFile; fileRef = 3037CAB723B94A430071CAE1 /* radiatorTestPlayground.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3037CABD23B94A850071CAE1 /* CalendarObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303C69A821E3E6C000EABBF6 /* CalendarObject.swift */; };
@@ -117,6 +118,7 @@
 /* Begin PBXFileReference section */
 		300741B721DBE35A008BFFAA /* FTPfileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTPfileUploader.swift; sourceTree = "<group>"; };
 		301DDA3723C12CAE00B96AC5 /* CalendarsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarsTableViewController.swift; sourceTree = "<group>"; };
+		3033470823FF309600B5EB74 /* MainMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuController.swift; sourceTree = "<group>"; };
 		3037CAAD23B921440071CAE1 /* CalendarTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableView.swift; sourceTree = "<group>"; };
 		3037CAAF23B9494A0071CAE1 /* radiatorTestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = radiatorTestPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		3037CAB523B94A420071CAE1 /* radiatorTestPlayground.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = radiatorTestPlayground.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -190,10 +192,12 @@
 		301DDA3E23C12FA100B96AC5 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				3037CAAD23B921440071CAE1 /* CalendarTableView.swift */,
 				3077E54321CC333800814343 /* MenuTableViewController.swift */,
 				301DDA3723C12CAE00B96AC5 /* CalendarsTableViewController.swift */,
 				3077E54521CC333900814343 /* Main.storyboard */,
 				3077E54A21CC333B00814343 /* LaunchScreen.storyboard */,
+				3033470823FF309600B5EB74 /* MainMenuController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -253,7 +257,6 @@
 				3077E54121CC333800814343 /* AppDelegate.swift */,
 				301DDA3D23C12F6E00B96AC5 /* Model */,
 				301DDA3E23C12FA100B96AC5 /* UI */,
-				3037CAAD23B921440071CAE1 /* CalendarTableView.swift */,
 				301DDA3F23C1306200B96AC5 /* Network */,
 				3077E54821CC333B00814343 /* Assets.xcassets */,
 				3077E54D21CC333C00814343 /* Info.plist */,
@@ -536,6 +539,7 @@
 				301DDA3823C12CAE00B96AC5 /* CalendarsTableViewController.swift in Sources */,
 				3077E54221CC333800814343 /* AppDelegate.swift in Sources */,
 				3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */,
+				3033470923FF309600B5EB74 /* MainMenuController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

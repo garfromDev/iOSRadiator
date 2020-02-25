@@ -9,21 +9,24 @@
 import Foundation
 import UIKit
 
-class CalendarsTableViewController: UITableViewController {
-    var calendars: Calendars?
-    let uim = UserInteractionManager.shared
+class CalendarsTableViewController: UITableViewController
+{
+    var uim = UserInteractionManager.shared
     
-    override func viewDidLoad(){
-        super.viewDidLoad()
-        self.calendars = uim.calendars
-        self.tableView.dataSource = calendars
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        uim.didSelectCalendarAt(index: indexPath)
     }
-    
 }
 
 
-extension CalendarsTableViewController: UI_Updatable {
-    func updateUI(timestamp: String) {
+extension CalendarsTableViewController: UI_Updatable{
+    @objc
+    func triggerUpdateUI( _ notification:Notification){
+        DispatchQueue.main.async(execute:{self.updateUI()})
+    }
+    
+    func updateUI(timestamp: String = "") {
+        self.tableView?.dataSource = uim.calendars
         self.tableView?.reloadData()
     }
 }

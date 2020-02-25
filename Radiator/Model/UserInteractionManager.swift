@@ -10,11 +10,80 @@ import Foundation
 import os
 import UIKit
 
-/** describe an object capable of pushing / retrieving file from distant system */
-protocol DistantFileManager{
-    func push(data:Data, fileName:String)
-    func pull(fileName:String, completion:@escaping DataCompletionHandler)
-    func pullSync(fileName:String)->DataOperationResult
+protocol SerialFileAction {
+    func pull(filename: FileName, handler: @escaping DataCompletionHandler)
+    func push(data: Data, filename: String, handler: @escaping DataCompletionHandler)
+}
+
+class Serializer: SerialFileAction {
+    private let dfAccessSemaphore = DispatchSemaphore(value: 1) // first wait will bring gown to zero, blocking further wait
+    private let sendRequestQueue = DispatchQueue(label:"sendRequestQueue", qos: .userInitiated)
+    private let handleCallbackQueue = DispatchQueue(label:"handleCallbackQueue", qos: .userInitiated)
+    private let distantFileManager : DistantFileManager
+    private let log : OSLog!
+    private static let defaultErrorHandler: DataCompletionHandler = { result in
+            //TODO: que faire si echec?, on rollback et pousse update que si OK? Pour l'instant on se contente de signaler une erreur
+            if case .failure(let err) = result {
+                NotificationCenter.default.post(Notification(name:UserInteractionManager.distantFileErrorNotification, userInfo: ["error": err]))
+            }
+        }
+    
+    
+    func pull(filename: FileName, handler: @escaping DataCompletionHandler) {
+        sendRequestQueue.async {
+            // first wait that any opened ftp Operation is finished
+            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
+            self.handleCallbackQueue.async(){
+                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                self.distantFileManager.pull(fileName: filename){
+                    (result:DataOperationResult) in
+                    self.dfAccessSemaphore.signal() // release access for next operation
+                    handler(result)
+                } //end of pull callback
+            } // end of handleCallBack operation
+        } // end of waiting queue operation
+    } //end of function
+    
+    
+    func push(data: Data, filename: String, handler: @escaping DataCompletionHandler = {_ in }) {
+        sendRequestQueue.async {
+            // first wait that any opened ftp Operation is finished
+            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
+            self.handleCallbackQueue.async(){
+                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                self.distantFileManager.push(data: data, fileName: filename){
+                    (result:DataOperationResult) in
+                    self.dfAccessSemaphore.signal() // release access for next operation
+                    handler(result)
+                } //end of pull callback
+            } // end of handleCallBack operation
+        } // end of waiting queue operation
+    }
+    
+    func copyItem(path: String, to toPath: String, completionHandler: @escaping DataCompletionHandler = Serializer.defaultErrorHandler){
+        sendRequestQueue.async {
+            // first wait that any opened ftp Operation is finished
+            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
+            self.handleCallbackQueue.async(){
+                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                self.distantFileManager.copyItem(path: path, to: toPath, overwrite: true){
+                    (result:DataOperationResult) in
+                    self.dfAccessSemaphore.signal() // release access for next operation
+                    completionHandler(result)
+                } //end of pull callback
+            } // end of handleCallBack operation
+        } // end of waiting queue operation
+    }
+    
+    
+    init(distantFileManager: DistantFileManager){
+        self.distantFileManager = distantFileManager
+        if #available(iOS 10.0, *) {
+            log = OSLog.init(subsystem: "fr.garfromdev.radiator", category: "UserInteractionManager")
+        }else{
+            log = nil
+        }
+    }
 }
 
 /** constant for files used in Radiator */
@@ -45,21 +114,27 @@ struct Files{
  */
 class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
-    var calendars : Calendars = Calendars()
+    var calendars : Calendars = Calendars() {
+    didSet{
+        print("new calendars \(String(reflecting:calendars))")
+        }
+    }
     // singleton
     static var shared = UserInteractionManager(distantFileManager: FTPfileUploader())
     static let updateUInotification = Notification.Name("updateUI")
+    static let distantFileErrorNotification = Notification.Name("distantFileError")
+    static let standardCalendarFile = "week.json"
     enum IOError: Error {
         case IOerror(msg: String)
     }
     private let dfAccessSemaphore = DispatchSemaphore(value: 1) // first wait will bring gown to zero, blocking further wait
     private let sendRequestQueue = DispatchQueue(label:"sendRequestQueue", qos: .userInitiated)
     private let handleCallbackQueue = DispatchQueue(label:"handleCallbackQueue", qos: .userInitiated)
-    private let distantFileManager : DistantFileManager
     private let log : OSLog!
+    private let serializer : Serializer
     
     init(distantFileManager: DistantFileManager){
-        self.distantFileManager = distantFileManager
+        self.serializer = Serializer(distantFileManager: distantFileManager)
         if #available(iOS 10.0, *) {
             log = OSLog.init(subsystem: "fr.garfromdev.radiator", category: "UserInteractionManager")
         }else{
@@ -70,73 +145,57 @@ class UserInteractionManager:NSObject{
     
     
     func pushUpdate(){
-        self.distantFileManager.push(data:self.userInteraction.toJson(),
-                                     fileName: Files.userInteraction)
-        self.distantFileManager.push(data: self.calendars.toJson(),
-                                     fileName: Files.calendars)
+        self.serializer.push(data:self.userInteraction.toJson(),
+                                     filename: Files.userInteraction)
+        self.serializer.push(data: self.calendars.toJson(),
+                                     filename: Files.calendars)
         self.UIupdate()
     }
     
     
     func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void){
-        sendRequestQueue.async {
-            // first wait that any opened ftp Operation is finished
-            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
-            self.handleCallbackQueue.async(){
-                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
-                self.distantFileManager.pull(fileName: Files.calendars){
-                    (result:DataOperationResult) in
-                    self.dfAccessSemaphore.signal() // release access for next operation
-                    switch result{
-                    case .success(let data):
-                        if let newcalendars = Calendars.fromJson(data){
-                            self.calendars = newcalendars
-                            completionHandler(Result.success(newcalendars))
-                            self.UIupdate()
-                        }
-                    case .failure(let error):
-                        // in case of failure, we keep current data
-                        completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                        if #available(iOS 10.0, *) {
-                            os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
-                        } else {
-                            print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
-                        }
-                    } //end switch
-                } //end pull call back
-            } // end handleCallBackQueue
-        } //end requestQueue
+        self.serializer.pull(filename: Files.calendars){
+            (result:DataOperationResult) in
+            switch result{
+                case .success(let data):
+                    if let newcalendars = Calendars.fromJson(data){
+                        self.calendars = newcalendars
+                        completionHandler(Result.success(newcalendars))
+                        self.UIupdate()
+                }
+                case .failure(let error):
+                    // in case of failure, we keep current data
+                    completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                    if #available(iOS 10.0, *) {
+                        os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
+                    } else {
+                        print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
+                }
+            } //end switch
+        } //end pull call back
     } // end pull function
     
     
     /// normal method to retrieve UserInteraction object, using handler
     func pullUserInteraction(handler completionHandler: @escaping (Result<UserInteraction, IOError>  ) -> Void){
-        sendRequestQueue.async {
-            // first wait that any opened ftp Operation is finished
-            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
-            self.handleCallbackQueue.async(){
-                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
-                self.distantFileManager.pull(fileName: Files.userInteraction){
-                    (result:DataOperationResult) in
-                    self.dfAccessSemaphore.signal() // release access for next operation
-                    switch result{
-                    case .success(let data):
-                        if let newUsrInteraction = UserInteraction.fromJson(data: data){
-                            self.userInteraction = newUsrInteraction
-                            completionHandler(Result.success(newUsrInteraction))
-                            self.UIupdate()
-                        }
-                    case .failure(let error):
-                        // in case of failure, we keep current data
-                        completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                        if #available(iOS 10.0, *) {
-                            os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
-                        } else {
-                            print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
-                        }
-                    }
+        self.serializer.pull(filename: Files.userInteraction){
+            (result:DataOperationResult) in
+            switch result{
+                case .success(let data):
+                    if let newUsrInteraction = UserInteraction.fromJson(data: data){
+                        self.userInteraction = newUsrInteraction
+                        completionHandler(Result.success(newUsrInteraction))
+                        self.UIupdate()
                 }
-            }
+                case .failure(let error):
+                    // in case of failure, we keep current data
+                    completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                    if #available(iOS 10.0, *) {
+                        os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
+                    } else {
+                        print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
+                }
+            } // end switch
         }
     }
     
@@ -161,7 +220,7 @@ class UserInteractionManager:NSObject{
     /**
      will pull new data and called UI refreshing asynchonously
      */
-    func refresh(){
+    @objc func refresh(_ t:Timer? = nil){
         self.pullUserInteraction() { _ in return }
         self.pullCalendars() { _ in self.UIupdate() } // because of serial mechanism, will be executed last
     }
@@ -170,5 +229,18 @@ class UserInteractionManager:NSObject{
     func UIupdate() {
         NotificationCenter.default.post(Notification(name:UserInteractionManager.updateUInotification, object: self))
     }
+    
+    
+    func didSelectCalendarAt(index: IndexPath) {
+        guard index.section == 0 else {return}
+        guard index.row <= self.calendars.list.count else {return}
+        
+        let newCalendar = self.calendars.names[index.row]
+        self.calendars.currentCalendar = newCalendar
+        guard let newCalFile = self.calendars.list[newCalendar] else {return}
+        self.serializer.copyItem(path: newCalFile, to: UserInteractionManager.standardCalendarFile)
+        self.pushUpdate()
+    }
+    
     
 } // end of class UserInteractionManager

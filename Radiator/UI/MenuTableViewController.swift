@@ -101,7 +101,6 @@ extension MenuTableViewController: UI_Updatable{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("")
         // userInteractionManager will trigger UI_Update() upon model change
         _ = NotificationCenter.default.addObserver(self, selector: #selector(triggerUpdateUI(_:))
             , name: UserInteractionManager.updateUInotification,
@@ -118,7 +117,7 @@ extension MenuTableViewController: UI_Updatable{
     /**
     this method update the UI based on userInteractionManager data
     */
-    func updateUI(timestamp : String = ""){
+    func updateUI(timestamp : String = Date().description(with: .current)){
         guard let uim = userInteractionManager?.userInteraction else {return}
         print("update UI with userInteraction : \(uim)")
         // -- The Heating Mode Selector

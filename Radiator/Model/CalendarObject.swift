@@ -80,7 +80,26 @@ extension Calendars: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellsID.calendarTableViewCell.rawValue)
         cell?.textLabel?.text = self.names[indexPath.row]
+        cell?.isSelected = self.names[indexPath.row] == self.currentCalendar
+        print("returning cell \(String(describing: cell?.textLabel?.text)) selected : \(String(describing: cell?.isSelected))")
+        cell?.accessoryType = cell!.isSelected ? .checkmark : .none
         return cell!
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return "Calendrier en cours d'utilisation"
+        }
+        return ""
+    }
+}
+
+extension Calendars{
+    override var debugDescription: String {
+        var str = "current cal : \(currentCalendar)\n"
+        for s in Array(list.keys) {
+            str += "   \(s)\n"
+        }
+        return str
+    }
 }

@@ -9,8 +9,11 @@
 import XCTest
 @testable import Radiator
 
+// A test method is an instance method of a test class that begins with the prefix test, takes no parameters, and returns void,
+
 class CalendarsTests: XCTestCase {
     let caldrs : Calendars = Calendars()
+    let positive_response = XCTestExpectation(description: "30_positive_answer")
     
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -50,6 +53,26 @@ class CalendarsTests: XCTestCase {
         XCTAssert(myCals.list.count == 2)
     }
     
+    func testCalendarsDataSource() throws {
+        let appBundle = Bundle(for: type(of: self))
+        guard let file = appBundle.url(forResource: "testCalendars", withExtension: "json") else {
+            XCTFail("testCalendars not found")
+            return
+        }
+        let data = try Data(contentsOf: file)
+        guard let myCals = Calendars.fromJson(data) else {
+            XCTFail("unable to decode json")
+            return
+        }
+        let tbv = UITableView()
+        tbv.register(UITableViewCell.self, forCellReuseIdentifier: cellsID.calendarTableViewCell.rawValue)
+        var cell = myCals.tableView(tbv, cellForRowAt: IndexPath(row: 0, section: 0))
+        XCTAssert(cell.textLabel?.text == Array(myCals.list.keys)[0])
+        cell = myCals.tableView(tbv, cellForRowAt: IndexPath(row: 1, section: 0))
+        XCTAssert(cell.textLabel?.text == Array(myCals.list.keys)[1])
+        XCTAssert(myCals.tableView(tbv, numberOfRowsInSection: 0) == 2)
+    }
+    
     func test10BackgroundFetch() {
         let got_response = XCTestExpectation(description: "10 got response")
         let positive_response = XCTestExpectation(description: "10 positive_answer")
@@ -87,14 +110,17 @@ class CalendarsTests: XCTestCase {
         wait(for: [got_response, positive_response], timeout: 20)
     }
     
+    
+    func receivedUpdateUi(_ : Notification){
+        positive_response.fulfill()
+    }
+    
 
     func test30PushToServer(){
-        let positive_response = XCTestExpectation(description: "30_positive_answer")
-        let errorHandler: (Error?)-> Void = {
-            error in
-            if error == nil { positive_response.fulfill() }
-        }
-        UserInteractionManager.shared = UserInteractionManager(distantFileManager: FTPfileUploader(errorHandler: errorHandler))
+        _ = NotificationCenter.default.addObserver(self, selector: #selector(receivedUpdateUi(_:))
+            , name: UserInteractionManager.updateUInotification,
+              object : nil)
+        UserInteractionManager.shared = UserInteractionManager(distantFileManager: FTPfileUploader())
         UserInteractionManager.shared.pushUpdate()
         wait(for: [positive_response], timeout: 20)
     }
@@ -150,12 +176,4 @@ class CalendarsTests: XCTestCase {
          wait(for: [positive_response1, positive_response2, positive_response3], timeout: 40)
     }
 
-// MARK: Datasource
-    func testDataSOurce() {
-//        XCTAssert(caldrs.tableView(CalendarTableView(), numberOfRowsInSection: 0) == 2)
-//        let cell = caldrs.tableView(CalendarTableView(), cellForRowAt: IndexPath(row: 0, section: 0))
-//        XCTAssertNotNil(cell)
-//        XCTAssert(cell.textLabel?.text == "vacances")
-    }
-
-}
+} //end CalendarsTest
