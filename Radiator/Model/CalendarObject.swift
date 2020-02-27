@@ -35,25 +35,7 @@ extension CalendarObject: jsonCodable{
     typealias T = CalendarObject
 }
 
-protocol jsonCodable: Codable{
-    associatedtype T: Codable
-    func toJson() -> Data
-    /// factory method to create CalendarObject from json data
-    static func fromJson(_ data: Data) -> T?
-}
 
-extension jsonCodable{
-    func toJson() -> Data {
-        let encoder = JSONEncoder()
-        return  try! encoder.encode(self)
-    }
-    
-    /// factory method to create CalendarObject from json data
-    static func fromJson(_ data: Data) -> T? {
-        let decoder = JSONDecoder()
-        return try? decoder.decode(T.self, from:data)
-    }
-}
 
 
 typealias CalendarName = String

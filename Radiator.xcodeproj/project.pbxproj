@@ -26,6 +26,9 @@
 		3063FEDE23BF1558006F6F83 /* testCalendars.json in Resources */ = {isa = PBXBuildFile; fileRef = 3063FEDD23BF1558006F6F83 /* testCalendars.json */; };
 		3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067011021D913AA008C7A53 /* UserInteraction.swift */; };
 		3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */; };
+		306B42212407F3C90044EF8F /* UI_protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306B42202407F3C90044EF8F /* UI_protocols.swift */; };
+		306B42272407F5F70044EF8F /* JsonCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306B42262407F5F70044EF8F /* JsonCodable.swift */; };
+		306B42292407F68B0044EF8F /* Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 306B42282407F68B0044EF8F /* Serializer.swift */; };
 		3077E54221CC333800814343 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E54121CC333800814343 /* AppDelegate.swift */; };
 		3077E54421CC333800814343 /* MenuTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E54321CC333800814343 /* MenuTableViewController.swift */; };
 		3077E54721CC333900814343 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3077E54521CC333900814343 /* Main.storyboard */; };
@@ -128,6 +131,9 @@
 		3063FEDD23BF1558006F6F83 /* testCalendars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testCalendars.json; sourceTree = "<group>"; };
 		3067011021D913AA008C7A53 /* UserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteraction.swift; sourceTree = "<group>"; };
 		3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteractionManager.swift; sourceTree = "<group>"; };
+		306B42202407F3C90044EF8F /* UI_protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UI_protocols.swift; sourceTree = "<group>"; };
+		306B42262407F5F70044EF8F /* JsonCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JsonCodable.swift; sourceTree = "<group>"; };
+		306B42282407F68B0044EF8F /* Serializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Serializer.swift; sourceTree = "<group>"; };
 		3077E53E21CC333800814343 /* Radiator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Radiator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3077E54121CC333800814343 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3077E54321CC333800814343 /* MenuTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableViewController.swift; sourceTree = "<group>"; };
@@ -192,12 +198,13 @@
 		301DDA3E23C12FA100B96AC5 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				3037CAAD23B921440071CAE1 /* CalendarTableView.swift */,
+				3077E54521CC333900814343 /* Main.storyboard */,
+				3033470823FF309600B5EB74 /* MainMenuController.swift */,
 				3077E54321CC333800814343 /* MenuTableViewController.swift */,
 				301DDA3723C12CAE00B96AC5 /* CalendarsTableViewController.swift */,
-				3077E54521CC333900814343 /* Main.storyboard */,
+				3037CAAD23B921440071CAE1 /* CalendarTableView.swift */,
 				3077E54A21CC333B00814343 /* LaunchScreen.storyboard */,
-				3033470823FF309600B5EB74 /* MainMenuController.swift */,
+				306B42202407F3C90044EF8F /* UI_protocols.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -206,6 +213,7 @@
 			isa = PBXGroup;
 			children = (
 				300741B721DBE35A008BFFAA /* FTPfileUploader.swift */,
+				306B42282407F68B0044EF8F /* Serializer.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -226,12 +234,19 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		306B42252407F5A50044EF8F /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				306B42262407F5F70044EF8F /* JsonCodable.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 		3077E53521CC333700814343 = {
 			isa = PBXGroup;
 			children = (
 				30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */,
 				3077E54021CC333800814343 /* Radiator */,
-				3077E55521CC333C00814343 /* RadiatorTests */,
 				3077E56021CC333D00814343 /* RadiatorUITests */,
 				3037CAB623B94A430071CAE1 /* radiatorTestPlayground */,
 				3077E53F21CC333800814343 /* Products */,
@@ -253,12 +268,14 @@
 		3077E54021CC333800814343 /* Radiator */ = {
 			isa = PBXGroup;
 			children = (
-				3037CAAF23B9494A0071CAE1 /* radiatorTestPlayground.playground */,
 				3077E54121CC333800814343 /* AppDelegate.swift */,
+				306B42252407F5A50044EF8F /* Support */,
 				301DDA3D23C12F6E00B96AC5 /* Model */,
 				301DDA3E23C12FA100B96AC5 /* UI */,
 				301DDA3F23C1306200B96AC5 /* Network */,
+				3077E55521CC333C00814343 /* RadiatorTests */,
 				3077E54821CC333B00814343 /* Assets.xcassets */,
+				3037CAAF23B9494A0071CAE1 /* radiatorTestPlayground.playground */,
 				3077E54D21CC333C00814343 /* Info.plist */,
 			);
 			path = Radiator;
@@ -532,7 +549,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				3037CAAE23B921440071CAE1 /* CalendarTableView.swift in Sources */,
+				306B42292407F68B0044EF8F /* Serializer.swift in Sources */,
 				300741B821DBE35A008BFFAA /* FTPfileUploader.swift in Sources */,
+				306B42272407F5F70044EF8F /* JsonCodable.swift in Sources */,
 				303C69AC21E3E6C100EABBF6 /* CalendarObject.swift in Sources */,
 				3077E54421CC333800814343 /* MenuTableViewController.swift in Sources */,
 				3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */,
@@ -540,6 +559,7 @@
 				3077E54221CC333800814343 /* AppDelegate.swift in Sources */,
 				3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */,
 				3033470923FF309600B5EB74 /* MainMenuController.swift in Sources */,
+				306B42212407F3C90044EF8F /* UI_protocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

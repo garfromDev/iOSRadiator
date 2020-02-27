@@ -76,4 +76,3 @@ struct FTPfileUploader : DistantFileManager {
     }
     
 }
-

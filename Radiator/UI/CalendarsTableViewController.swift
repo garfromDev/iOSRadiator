@@ -9,6 +9,9 @@
 import Foundation
 import UIKit
 
+/**
+ Handle the choice of calendars
+ */
 class CalendarsTableViewController: UITableViewController
 {
     var uim = UserInteractionManager.shared

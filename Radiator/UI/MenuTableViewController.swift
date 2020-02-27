@@ -6,39 +6,10 @@
 //  Copyright © 2018 garfromDev. All rights reserved.
 //
 
-// pour mixer dynamique, https://stackoverflow.com/questions/18153702/uitableview-mix-of-static-and-dynamic-cells
 import UIKit
 import FilesProvider
 
-/** describe a controller that know how to update UI
- timestamp is used to display last update time if needed
- it is up to the caller to define what to pass
- */
-protocol UI_Updatable {
-    func updateUI(timestamp:String)
-}
-
-extension UIViewController {
-     /// The visible view controller from a given view controller
-    var updatableViewController: UI_Updatable? {
-         if let navigationController = self as? UINavigationController {
-            if let cont = navigationController.topViewController?.updatableViewController {
-                return cont
-            }
-         } else if let tabBarController = self as? UITabBarController {
-            if let cont = tabBarController.selectedViewController?.updatableViewController {
-                return cont
-            }
-         } else if let presentedViewController = presentedViewController as? UI_Updatable {
-            return presentedViewController
-         } else if let cont = self as? UI_Updatable{
-             return cont
-         }
-        return nil
-     }
- }
-
-/** handle the main static table view */
+/** handle the main static table view , choice of heating mode  and adjustement */
 class MenuTableViewController: UITableViewController  {
 
     weak var userInteractionManager : UserInteractionManager? = UserInteractionManager.shared
@@ -145,23 +116,6 @@ extension MenuTableViewController: UI_Updatable{
     }
 }
 
-
-// protocol to work with FTP file provider
-extension MenuTableViewController: FileProviderDelegate
-{
-    func fileproviderFailed(_ fileProvider: FileProviderOperations, operation: FileOperationType, error: Error) {
-        let msg = "\(operation.actionDescription) from \(operation.source) to \(operation.destination ?? "") failed"
-        print(msg)
-        let alertController = UIAlertController(title: "Radiator", message: msg, preferredStyle: .alert)
-        self.present(alertController, animated:true)
-    }
-    
-    func fileproviderSucceed(_ fileProvider: FileProviderOperations, operation: FileOperationType){
-    }
-    
-    func fileproviderProgress(_ fileProvider: FileProviderOperations, operation: FileOperationType, progress: Float) {
-    }
-}
 
 
 

@@ -14,8 +14,6 @@ class MainMenuController: UIViewController {
     
     @IBOutlet weak var calendarsChoice: UIView!
     
-    // TODO : mecanisme de rafraichissement périodique (ou dans App-delegate?)
-    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         uim.refresh()
@@ -35,6 +33,7 @@ class MainMenuController: UIViewController {
     }
     
 }
+
 
 
 extension MainMenuController: UI_Updatable{
@@ -58,6 +57,9 @@ extension MainMenuController: UI_Updatable{
      */
     func updateUI(timestamp : String = ""){
         self.calendarsChoice.isUserInteractionEnabled = uim.userInteraction.calendarMode()
+        self.calendarsChoice.tintAdjustmentMode = calendarsChoice.isUserInteractionEnabled ? .normal : .dimmed
+        self.calendarsChoice.alpha = calendarsChoice.isUserInteractionEnabled ? 1.0 : 0.4
+        
     }
     
 }
