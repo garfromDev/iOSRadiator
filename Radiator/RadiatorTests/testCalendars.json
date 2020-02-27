@@ -1,0 +1,7 @@
+{
+  "currentCalendar": "vacances",
+  "list": {
+    "vacances": "holidays.json",
+    "travail": "regular.json"
+  }
+}
