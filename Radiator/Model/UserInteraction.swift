@@ -12,6 +12,7 @@ import Foundation
 enum HeatingMode:String , Codable{
     case confort = "confort"
     case eco = "eco"
+    case off = "off"
     case unknow = "unknow"
 }
 
@@ -70,9 +71,14 @@ extension UserInteraction {
             self.overruled.overMode == .eco
     }
     
+    func offMode()->Bool{
+        return self.overruled.status &&
+            isNotExpired(self.overruled.expirationDate) &&
+            self.overruled.overMode == .off
+    }
     
     func calendarMode()->Bool{
-        return !self.confortMode() && !self.ecoMode()
+        return !self.confortMode() && !self.ecoMode() && !self.offMode()
     }
     
     

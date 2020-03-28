@@ -12,9 +12,10 @@ import UIKit
 
 /** constant for files used in Radiator */
 struct Files{
-    static let userInteraction = "userinteraction.json"
+    static let userInteraction = "userInteraction.json"
     static let calendars = "calendars.json"
     static let currentStatus = "currentStatus.json"
+    static let standardCalendarFile = "week.json"
 }
 
 /*
@@ -162,7 +163,7 @@ class UserInteractionManager:NSObject{
         let newCalendar = self.calendars.names[index.row]
         self.calendars.currentCalendar = newCalendar
         guard let newCalFile = self.calendars.list[newCalendar] else {return}
-        self.serializer.copyItem(path: newCalFile, to: UserInteractionManager.standardCalendarFile)
+        self.serializer.copyItem(path: newCalFile, to: Files.standardCalendarFile)
         self.pushUpdate()
     }
     

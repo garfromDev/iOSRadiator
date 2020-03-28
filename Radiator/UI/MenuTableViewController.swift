@@ -19,7 +19,14 @@ class MenuTableViewController: UITableViewController  {
         case eco = 0
         case confort = 1
         case calendar = 2
+        case off = 3
     }
+    /// mapper from selected segment to Heating mode
+    let mapper: [Int:HeatingMode] = [
+        0: .eco,
+        1: .confort,
+        3: .off
+    ]
 
     /** index for the Segmented Selector to choose adjustement */
     enum BonusSelectorIndex:Int{
@@ -44,8 +51,8 @@ class MenuTableViewController: UITableViewController  {
         switch ModeSelectorIndex(rawValue: sender.selectedSegmentIndex)! {
         case .calendar: //calendrier
             userInteractionManager?.userInteraction.overruled.status = false
-        case .eco, .confort: //overrule eco ou confort
-            userInteractionManager?.userInteraction.setOverruleMode(sender.selectedSegmentIndex == 0 ? .eco : .confort)
+        case .eco, .confort, .off: //overrule eco ou confort ou off
+            userInteractionManager?.userInteraction.setOverruleMode(mapper[sender.selectedSegmentIndex] ?? .unknow)
         }
         userInteractionManager?.pushUpdate()
     }
@@ -98,10 +105,12 @@ extension MenuTableViewController: UI_Updatable{
             self.modeChoiceSelector.selectedSegmentIndex = ModeSelectorIndex.eco.rawValue
         }else if uim.confortMode(){
             self.modeChoiceSelector.selectedSegmentIndex = ModeSelectorIndex.confort.rawValue
+        }else if uim.offMode(){
+            self.modeChoiceSelector.selectedSegmentIndex = ModeSelectorIndex.off.rawValue
         }
         
-        // disable adjustement if heating mode eco
-        self.bonusSelector.isEnabled = !uim.ecoMode()
+        // disable adjustement if heating mode eco or off
+        self.bonusSelector.isEnabled = !(uim.ecoMode() || uim.offMode())
         
         // the Adjustment Selector
         if uim.userDownActive(){

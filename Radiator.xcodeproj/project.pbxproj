@@ -836,7 +836,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QXYQ94XRJK;
-				INFOPLIST_FILE = RadiatorTests/Info.plist;
+				INFOPLIST_FILE = Radiator/RadiatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -857,7 +857,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QXYQ94XRJK;
-				INFOPLIST_FILE = RadiatorTests/Info.plist;
+				INFOPLIST_FILE = Radiator/RadiatorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

@@ -85,6 +85,7 @@
                                                         <segment title="Eco"/>
                                                         <segment title="Confort"/>
                                                         <segment title="Calendrier"/>
+                                                        <segment title="Off"/>
                                                     </segments>
                                                     <connections>
                                                         <action selector="modeDidChange:" destination="7I5-EF-7Kj" eventType="valueChanged" id="Xte-6h-ygv"/>
