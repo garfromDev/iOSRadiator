@@ -36,6 +36,7 @@
 		3077E54C21CC333B00814343 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3077E54A21CC333B00814343 /* LaunchScreen.storyboard */; };
 		3077E55721CC333C00814343 /* RadiatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E55621CC333C00814343 /* RadiatorTests.swift */; };
 		3077E56221CC333D00814343 /* RadiatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E56121CC333D00814343 /* RadiatorUITests.swift */; };
+		30883FE924EB182300725582 /* DaylyTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30883FE824EB182300725582 /* DaylyTiming.swift */; };
 		30B2829C21DC0C5400CE731C /* FilesProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; };
 		30B2829D21DC0C5400CE731C /* FilesProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		30F4685F23BB78080011B3C9 /* TestFiles.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30F4685E23BB78080011B3C9 /* TestFiles.xcassets */; };
@@ -147,6 +148,7 @@
 		3077E55D21CC333D00814343 /* RadiatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RadiatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3077E56121CC333D00814343 /* RadiatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadiatorUITests.swift; sourceTree = "<group>"; };
 		3077E56321CC333D00814343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30883FE824EB182300725582 /* DaylyTiming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaylyTiming.swift; sourceTree = "<group>"; };
 		30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FilesProvider.xcodeproj; path = FileProvider/FilesProvider.xcodeproj; sourceTree = "<group>"; };
 		30F4685E23BB78080011B3C9 /* TestFiles.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestFiles.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -205,6 +207,7 @@
 				3037CAAD23B921440071CAE1 /* CalendarTableView.swift */,
 				3077E54A21CC333B00814343 /* LaunchScreen.storyboard */,
 				306B42202407F3C90044EF8F /* UI_protocols.swift */,
+				30883FE824EB182300725582 /* DaylyTiming.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -556,6 +559,7 @@
 				3077E54421CC333800814343 /* MenuTableViewController.swift in Sources */,
 				3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */,
 				301DDA3823C12CAE00B96AC5 /* CalendarsTableViewController.swift in Sources */,
+				30883FE924EB182300725582 /* DaylyTiming.swift in Sources */,
 				3077E54221CC333800814343 /* AppDelegate.swift in Sources */,
 				3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */,
 				3033470923FF309600B5EB74 /* MainMenuController.swift in Sources */,
