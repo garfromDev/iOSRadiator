@@ -2,9 +2,19 @@ import Foundation
 import UIKit
 
 enum Days:String, Codable{
-    case monday
-    case tuesday
+    case Monday
+    case Tuesday
+    case Wenesday
+    case Thursday
+    case Friday
+    case Saturday
+    case Sunday
 }
+
+extension Days: jsonCodable {
+    typealias T = Days
+}
+
 typealias Hours=String
 
 enum Modes:String, Codable{

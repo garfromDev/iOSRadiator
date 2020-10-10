@@ -22,7 +22,7 @@ class CalendarsTests: XCTestCase {
     }
 
     
-    //MARK: CalendarObject & Calendars
+    //MARK: Calendars
     func testToAndFromJson() {
         XCTAssertNotNil(caldrs)
         let json = caldrs.toJson()
@@ -176,4 +176,35 @@ class CalendarsTests: XCTestCase {
          wait(for: [positive_response1, positive_response2, positive_response3], timeout: 40)
     }
 
+    // MARK: CalendarObject
+    func testGetCalendarObjectFromJson(){
+        let appBundle = Bundle(for: type(of: self))
+        guard let file = appBundle.url(forResource: "week", withExtension: "json") else {
+            XCTFail("week.json not found")
+            return
+        }
+        XCTAssertNoThrow(try Data(contentsOf: file))
+        let data = try? Data(contentsOf: file)
+        guard let cal:CalendarObject = CalendarObject.fromJson(data!) else {
+            XCTFail("unable to decode json for CalendarObject")
+            return
+        }
+        XCTAssertEqual(cal["weekCalendar"]?[Days.Monday]?["05:15"], Modes.eco)
+    }
+    
+    func testDaysToJson(){
+        print("testing")
+        let tuesday = Days.Tuesday
+        let json = tuesday.toJson()
+        print(String(data: json, encoding: .utf8))
+    }
+    
+    func testDaysFromJson() {
+        let str = """
+        \"Tuesday\"
+        """
+        let data = str.data(using: String.Encoding.utf8)!
+        let day = Days.fromJson(data)
+        XCTAssertEqual(day, Days.Tuesday)
+    }
 } //end CalendarsTest
