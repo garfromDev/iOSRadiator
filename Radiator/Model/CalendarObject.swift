@@ -21,6 +21,10 @@ enum Modes:String, Codable{
     case confort
     case eco
 }
+extension Modes: jsonCodable {
+    typealias T = Modes
+}
+
 
 /** description of setting for a day
  keys are hours in 08:15 format, every 15 mn*/
@@ -28,7 +32,7 @@ typealias DayCalendar = [Hours:Modes ]
 
 /** description of settings for the week
  keys are days in full english (monday, ...) */
-typealias WeekCalendar = Dictionary<Days,DayCalendar>
+typealias WeekCalendar = [Days : DayCalendar]
 
 /** encapsulation of weekCalendar for compatibility
  with python Radiator, only key is : weekCalendar
@@ -36,16 +40,37 @@ typealias WeekCalendar = Dictionary<Days,DayCalendar>
  */
 typealias CalendarObject   = [String:WeekCalendar]
 
+/*
+ To avoid the concern of dictionary with non string key encoded to array (even if it is enum with raw value String)
+ we replace Days by JDays as String for encoding/decoding
+ */
+typealias JDays = String
+typealias JWeekCalendar = [JDays : DayCalendar]
+typealias JCalendarObject   = [String:JWeekCalendar]
+
 /**
  calendar list is handled only by app, not by python, python will only use file
  week.json as input
  
  */
-extension CalendarObject: jsonCodable{
-    typealias T = CalendarObject
+extension JCalendarObject: jsonCodable{
+    typealias T = JCalendarObject
 }
 
-
+extension JCalendarObject{
+    /**
+     Transform JCalendarObject we get from Json into CalendarObject with strong type (enum)
+     */
+    func toCalendarObject()->CalendarObject {
+        var wk : WeekCalendar = [:]
+        for (k, v) in self["weekCalendar"]! {
+            if let day = Days(rawValue: k) {
+                wk[day] = v
+            }
+        }
+        return ["weekCalendar" : wk]
+    }
+}
 
 
 typealias CalendarName = String

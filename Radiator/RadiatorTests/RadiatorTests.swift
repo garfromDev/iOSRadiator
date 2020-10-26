@@ -185,10 +185,12 @@ class CalendarsTests: XCTestCase {
         }
         XCTAssertNoThrow(try Data(contentsOf: file))
         let data = try? Data(contentsOf: file)
-        guard let cal:CalendarObject = CalendarObject.fromJson(data!) else {
+        guard let jcal:JCalendarObject = JCalendarObject.fromJson(data!) else {
             XCTFail("unable to decode json for CalendarObject")
             return
         }
+        XCTAssertEqual(jcal["weekCalendar"]?["Monday"]?["05:15"], Modes.eco)
+        let cal = jcal.toCalendarObject()
         XCTAssertEqual(cal["weekCalendar"]?[Days.Monday]?["05:15"], Modes.eco)
     }
     
@@ -207,4 +209,37 @@ class CalendarsTests: XCTestCase {
         let day = Days.fromJson(data)
         XCTAssertEqual(day, Days.Tuesday)
     }
+    
+    func testModesToJson(){
+        let eco=Modes.eco
+        let json = eco.toJson()
+        print(String(data: json, encoding: .utf8)!)
+    }
+    
+    func testModesFromJson() {
+        let str = """
+    \"confort\"
+    """
+        let data = str.data(using: String.Encoding.utf8)!
+        let mode = Modes.fromJson(data)
+        XCTAssertEqual(mode, .confort)
+    }
+    
+    func testDayCalendarFromJson(){
+        let str = """
+      {\"16:00\" : \"confort\"}
+    """
+        let data = str.data(using: String.Encoding.utf8)!
+        //let dayCal = DayCalendar.fromJson(data)
+    }
+    
+    func testCalendarObjectToJson() {
+        let dc : DayCalendar = ["16:00": .confort,
+                                "18:00" : .eco]
+        let wk : WeekCalendar = [ Days.Tuesday : dc]
+        let co = ["weekCalendar" : wk]
+        //let json = co.toJson()
+        //print(String(data: json, encoding: .utf8)!)
+    }
+    
 } //end CalendarsTest
