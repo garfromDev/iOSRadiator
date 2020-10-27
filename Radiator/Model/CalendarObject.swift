@@ -70,7 +70,6 @@ extension JCalendarObject{
      Transform JCalendarObject we get from Json into CalendarObject with strong type (enum)
      */
     func toCalendarObject()->CalendarObject {
-        // FIXME : ajouter test
         var wk : WeekCalendar = [:]
         for (k, v) in self["weekCalendar"]! {
             if let day = Days(rawValue: k) {

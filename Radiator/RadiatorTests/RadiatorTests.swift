@@ -117,7 +117,7 @@ class CalendarsTests: XCTestCase {
     
 
     func test30PushToServer(){
-        _ = NotificationCenter.default.addObserver(self, selector: #selector(receivedUpdateUi(_:))
+        NotificationCenter.default.addObserver(self, selector: #selector(receivedUpdateUi(_:))
             , name: UserInteractionManager.updateUInotification,
               object : nil)
         UserInteractionManager.shared = UserInteractionManager(distantFileManager: FTPfileUploader())
@@ -193,13 +193,7 @@ class CalendarsTests: XCTestCase {
         let cal = jcal.toCalendarObject()
         XCTAssertEqual(cal["weekCalendar"]?[Days.Monday]?["05:15"], Modes.eco)
     }
-    
-    func testDaysToJson(){
-        print("testing")
-        let tuesday = Days.Tuesday
-        let json = tuesday.toJson()
-        print(String(data: json, encoding: .utf8))
-    }
+
     
     func testDaysFromJson() {
         let str = """
@@ -225,21 +219,19 @@ class CalendarsTests: XCTestCase {
         XCTAssertEqual(mode, .confort)
     }
     
-    func testDayCalendarFromJson(){
-        let str = """
-      {\"16:00\" : \"confort\"}
-    """
-        let data = str.data(using: String.Encoding.utf8)!
-        //let dayCal = DayCalendar.fromJson(data)
-    }
+
+    
     
     func testCalendarObjectToJson() {
         let dc : DayCalendar = ["16:00": .confort,
                                 "18:00" : .eco]
         let wk : WeekCalendar = [ Days.Tuesday : dc]
-        let co = ["weekCalendar" : wk]
-        //let json = co.toJson()
-        //print(String(data: json, encoding: .utf8)!)
+        let co : CalendarObject = ["weekCalendar" : wk]
+        let json = co.toJCalendarObject().toJson()
+        
+        let jcal = JCalendarObject.fromJson(json)
+        let cal = jcal?.toCalendarObject()
+        XCTAssertEqual(cal!["weekCalendar"]![Days.Tuesday]!["16:00"], Modes.confort)
     }
     
 } //end CalendarsTest

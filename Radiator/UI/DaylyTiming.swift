@@ -149,7 +149,7 @@ var body: some View {
 
 
 @available(iOS 13, *) struct DaylyTiming_Previews: PreviewProvider {
-    
+    // FIXME : charger un CalendarObject pour plugguer les vues sur lui
     static var previews: some View {
         MultipleDayly()
     }

@@ -52,16 +52,10 @@ class UserInteractionManager:NSObject{
     private let dfAccessSemaphore = DispatchSemaphore(value: 1) // first wait will bring gown to zero, blocking further wait
     private let sendRequestQueue = DispatchQueue(label:"sendRequestQueue", qos: .userInitiated)
     private let handleCallbackQueue = DispatchQueue(label:"handleCallbackQueue", qos: .userInitiated)
-    private let log : OSLog!
     private let serializer : Serializer
     
     init(distantFileManager: DistantFileManager){
         self.serializer = Serializer(distantFileManager: distantFileManager)
-        if #available(iOS 10.0, *) {
-            log = OSLog.init(subsystem: "fr.garfromdev.radiator", category: "UserInteractionManager")
-        }else{
-            log = nil
-        }
         super.init()
     }
     
@@ -71,12 +65,14 @@ class UserInteractionManager:NSObject{
                                      filename: Files.userInteraction)
         self.serializer.push(data: self.calendars.toJson(),
                                      filename: Files.calendars)
-        //FXME utiliser une boucle plutot, 
-        _ = self.weekCalendars.map({self.serializer.push(data:$1.toJCalendarObject().toJson(),
-                                                     filename: $0)})
+        for (fileName, calendar) in self.weekCalendars{
+            self.serializer.push(data: calendar.toJCalendarObject().toJson(),
+                                 filename: fileName)
+        }
         self.UIupdate()
     }
     
+
     
     /// normal method to retrieve Calendar object, using handler
     func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void){
@@ -98,6 +94,7 @@ class UserInteractionManager:NSObject{
                                 }
                             case .failure(let error):
                                 completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                                Xlogger.logError(message:"Failed to retrieve Calendars from server", error: error)
                             }
                         }
                     }
@@ -108,11 +105,7 @@ class UserInteractionManager:NSObject{
             case .failure(let error):
                 // in case of failure, we keep current data
                 completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                if #available(iOS 10.0, *) {
-                    os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
-                } else {
-                    print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
-                }
+                Xlogger.logError(message:"Failed to retrieve Calendars from server", error: error)
             } //end switch
         } //end pull call back
     } // end pull function
@@ -132,11 +125,7 @@ class UserInteractionManager:NSObject{
                 case .failure(let error):
                     // in case of failure, we keep current data
                     completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                    if #available(iOS 10.0, *) {
-                        os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
-                    } else {
-                        print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
-                }
+                    Xlogger.logError(message: "Failed to retrieve Calendars from server", error: error)
             } // end switch
         }
     }
