@@ -38,11 +38,9 @@ struct Files{
  */
 class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
-    var calendars : Calendars = Calendars() {
-    didSet{
-        print("new calendars \(String(reflecting:calendars))")
-        }
-    }
+    var calendars : Calendars = Calendars()
+    var weekCalendars : [FileName : CalendarObject] = [:]
+    
     // singleton
     static var shared = UserInteractionManager(distantFileManager: FTPfileUploader())
     static let updateUInotification = Notification.Name("updateUI")
@@ -73,6 +71,9 @@ class UserInteractionManager:NSObject{
                                      filename: Files.userInteraction)
         self.serializer.push(data: self.calendars.toJson(),
                                      filename: Files.calendars)
+        //FXME utiliser une boucle plutot, 
+        _ = self.weekCalendars.map({self.serializer.push(data:$1.toJCalendarObject().toJson(),
+                                                     filename: $0)})
         self.UIupdate()
     }
     
@@ -82,19 +83,35 @@ class UserInteractionManager:NSObject{
         self.serializer.pull(filename: Files.calendars){
             (result:DataOperationResult) in
             switch result{
-                case .success(let data):
-                    if let newcalendars = Calendars.fromJson(data){
-                        self.calendars = newcalendars
-                        completionHandler(Result.success(newcalendars))
-                        self.UIupdate()
+            case .success(let data):
+                if let newcalendars = Calendars.fromJson(data){
+                    self.calendars = newcalendars
+                    // retrieve CalendarObjetcs (weekly quaterhourly mode)
+                    var weekCal : [FileName : CalendarObject] = [:]
+                    for calFileName in self.calendars.list.values{
+                        self.serializer.pull(filename: calFileName) {
+                            (result:DataOperationResult) in
+                            switch result{
+                            case .success(let data):
+                                if let newJCalObj = JCalendarObject.fromJson(data){
+                                    weekCal[calFileName] = newJCalObj.toCalendarObject()
+                                }
+                            case .failure(let error):
+                                completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                            }
+                        }
+                    }
+                    self.weekCalendars = weekCal
+                    completionHandler(Result.success(newcalendars))
+                    self.UIupdate()
                 }
-                case .failure(let error):
-                    // in case of failure, we keep current data
-                    completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                    if #available(iOS 10.0, *) {
-                        os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
-                    } else {
-                        print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
+            case .failure(let error):
+                // in case of failure, we keep current data
+                completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
+                if #available(iOS 10.0, *) {
+                    os_log("Failed to retrieve Calendars from server %{public}@", log:self.log, type:.error, error.localizedDescription)
+                } else {
+                    print("Failed to retrieve Calendars from server  \(error.localizedDescription)")
                 }
             } //end switch
         } //end pull call back

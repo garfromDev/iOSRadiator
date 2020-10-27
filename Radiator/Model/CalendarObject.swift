@@ -39,7 +39,15 @@ typealias WeekCalendar = [Days : DayCalendar]
  this object can be encoded using JSON encoder and provide correct file format
  */
 typealias CalendarObject   = [String:WeekCalendar]
-
+extension CalendarObject{
+    func toJCalendarObject()->JCalendarObject{
+        var wk : JWeekCalendar = [:]
+        for (k, v) in self["weekCalendar"]! {
+            wk[k.rawValue as JDays] = v
+        }
+        return ["weekCalendar" : wk]
+    }
+}
 /*
  To avoid the concern of dictionary with non string key encoded to array (even if it is enum with raw value String)
  we replace Days by JDays as String for encoding/decoding
@@ -62,6 +70,7 @@ extension JCalendarObject{
      Transform JCalendarObject we get from Json into CalendarObject with strong type (enum)
      */
     func toCalendarObject()->CalendarObject {
+        // FIXME : ajouter test
         var wk : WeekCalendar = [:]
         for (k, v) in self["weekCalendar"]! {
             if let day = Days(rawValue: k) {
@@ -70,6 +79,8 @@ extension JCalendarObject{
         }
         return ["weekCalendar" : wk]
     }
+    
+
 }
 
 
