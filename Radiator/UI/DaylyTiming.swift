@@ -30,11 +30,6 @@ let week = [DayIndicator(letter: "L", active: true),
 ]
 
 
-struct QuarterTemplate {
-    var heatmode : HeatingMode
-    var hour: String = ""
-}
-
 extension HeatingMode {
     mutating func toogle(){
         switch self{
@@ -138,6 +133,8 @@ var body: some View {
 
 
 @available(iOS 13, *) struct MultipleDayly: View {
+    @State var cal:CalendarObject
+    
     var body: some View{
         VStack(alignment: .leading) {
             DaylyTiming()
@@ -150,8 +147,11 @@ var body: some View {
 
 @available(iOS 13, *) struct DaylyTiming_Previews: PreviewProvider {
     // FIXME : charger un CalendarObject pour plugguer les vues sur lui
+    
     static var previews: some View {
-        MultipleDayly()
+        let jcal = UserInteractionManager.shared.weekCalendars.first!
+        let cal = jcal.value
+        return MultipleDayly(cal: cal)
     }
 }
 

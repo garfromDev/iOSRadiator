@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-enum Days:String, Codable{
+enum Days:String, Codable, CaseIterable{
     case Monday
     case Tuesday
     case Wenesday
@@ -17,19 +17,20 @@ extension Days: jsonCodable {
 
 typealias Hours=String
 
-enum Modes:String, Codable{
-    case confort
-    case eco
-}
-extension Modes: jsonCodable {
-    typealias T = Modes
-}
 
+extension HeatingMode: jsonCodable{
+    typealias T = HeatingMode
+}
 
 /** description of setting for a day
  keys are hours in 08:15 format, every 15 mn*/
-typealias DayCalendar = [Hours:Modes ]
-
+typealias DayCalendar = [Hours:HeatingMode]
+extension DayCalendar {
+    init(from: DayTemplate){
+        // FIXME implement
+        self.init()
+    }
+}
 /** description of settings for the week
  keys are days in full english (monday, ...) */
 typealias WeekCalendar = [Days : DayCalendar]

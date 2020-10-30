@@ -189,9 +189,9 @@ class CalendarsTests: XCTestCase {
             XCTFail("unable to decode json for CalendarObject")
             return
         }
-        XCTAssertEqual(jcal["weekCalendar"]?["Monday"]?["05:15"], Modes.eco)
+        XCTAssertEqual(jcal["weekCalendar"]?["Monday"]?["05:15"], HeatingMode.eco)
         let cal = jcal.toCalendarObject()
-        XCTAssertEqual(cal["weekCalendar"]?[Days.Monday]?["05:15"], Modes.eco)
+        XCTAssertEqual(cal["weekCalendar"]?[Days.Monday]?["05:15"], HeatingMode.eco)
     }
 
     
@@ -231,7 +231,7 @@ class CalendarsTests: XCTestCase {
         
         let jcal = JCalendarObject.fromJson(json)
         let cal = jcal?.toCalendarObject()
-        XCTAssertEqual(cal!["weekCalendar"]![Days.Tuesday]!["16:00"], Modes.confort)
+        XCTAssertEqual(cal!["weekCalendar"]![Days.Tuesday]!["16:00"], HeatingMode.confort)
     }
     
 } //end CalendarsTest

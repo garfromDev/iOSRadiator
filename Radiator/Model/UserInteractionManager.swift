@@ -38,7 +38,9 @@ struct Files{
  */
 class UserInteractionManager:NSObject{
     var userInteraction : UserInteraction = UserInteraction()
+    /** the calendars that may apply (the one applying is given by currentCalendar*/
     var calendars : Calendars = Calendars()
+    /** the weekly quaterhourly heating mode calendars*/
     var weekCalendars : [FileName : CalendarObject] = [:]
     
     // singleton
