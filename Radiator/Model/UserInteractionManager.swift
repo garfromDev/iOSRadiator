@@ -9,6 +9,7 @@
 import Foundation
 import os
 import UIKit
+import SwiftUI
 
 /** constant for files used in Radiator */
 struct Files{
@@ -71,7 +72,7 @@ class UserInteractionManager:NSObject{
     
     
     func pushUpdate(){
-        
+        // TODO : transformer DaylyEditing en CalendarObject
         self.serializer.push(data:self.userInteraction.toJson(),
                                      filename: Files.userInteraction)
         self.serializer.push(data: self.calendars.toJson(),
@@ -187,17 +188,20 @@ class UserInteractionManager:NSObject{
     
 } // end of class UserInteractionManager
 
-protocol DaylyEditingProvider{
-    var daylyEditings: Array<DaylyEditing> {get set}
-}
 
 @available(iOS 13.0, *)
 /** ssubclass of UserInterazctionManager with support of observableObject*/
 class UserInteractionManagerIos13: UserInteractionManager, ObservableObject {
-    @Published var daylyEditings: Array<DaylyEditing> = []
+    @Published var daylyEditing: DaylyEditing = DaylyEditing() 
+    override func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void) {
+        super.pullCalendars(handler: completionHandler)
+        if let wk = weekCalendars[calendars.currentCalendar]?["weekCalendar"] {
+            self.daylyEditing = DaylyEditing(from: wk)
+        }
+    }
 }
 
 @available(iOS, introduced: 9.3, deprecated: 13.0, message: "Use swift UI")
-class UserInteractionManagerIos9: UserInteractionManager, DaylyEditingProvider{
-    var daylyEditings: Array<DaylyEditing> = []
+class UserInteractionManagerIos9: UserInteractionManager{
+    var daylyEditing: DaylyEditing = DaylyEditing()
 }

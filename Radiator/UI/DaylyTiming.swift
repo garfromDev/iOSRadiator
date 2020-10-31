@@ -5,7 +5,9 @@
 //  Created by Alistef on 17/08/2020.
 //  Copyright © 2020 garfromDev. All rights reserved.
 //
+
 import SwiftUI
+
 
 /*
  A faire :vérifier qu'on peut afficher le controleur swift UI en ios13 et un controleur classique en iOS 9 (IPAD)
@@ -98,6 +100,7 @@ struct DayIndicator: Hashable{
     var active: Bool
 }
 
+
 @available(iOS 13, *) struct WeekOverview: View {
    @State  var days: [DayIndicator]
 
@@ -114,8 +117,9 @@ var body: some View {
     }
 }
 
+
 @available(iOS 13, *) struct DaylyTiming: View {
-    
+    var dayGroup: DayGroupEditing
     var body: some View {
         VStack(alignment: .leading) {
             WeekOverview(days: week)
@@ -132,25 +136,25 @@ var body: some View {
 }
 
 
-@available(iOS 13, *) struct MultipleDayly: View {
-    @State var cal:DaylyEditing
+@available(iOS 13, *)
+struct MultipleDayly: View {
+    @EnvironmentObject var mng:UserInteractionManagerIos13
     
     var body: some View{
         VStack(alignment: .leading) {
-            DaylyTiming()
-            DaylyTiming()
-            DaylyTiming()
+            ForEach(mng.daylyEditing.templates, id:\.id){ dayGroup in
+                DaylyTiming(dayGroup: dayGroup)
+            }
         }
     }
 }
 
 
 @available(iOS 13, *) struct DaylyTiming_Previews: PreviewProvider {
-    // FIXME : charger un CalendarObject pour plugguer les vues sur lui
     
     static var previews: some View {
         let mng = UserInteractionManagerIos13(distantFileManager: FTPfileUploader())
-        return MultipleDayly(cal: mng.daylyEditings.first!).environmentObject(mng)
+        return MultipleDayly().environmentObject(mng)
     }
 }
 

@@ -8,13 +8,12 @@
 
 import Foundation
 
-struct DaylyEditing{
-    var templates: [DayGroupEditing]
-}
-
-struct DayGroupEditing {
-    var applicableTo : Set<Days> = Set<Days>()
-    var template : DayTemplate = DayTemplate()
+struct DaylyEditing {
+    var templates: [DayGroupEditing] = [] {
+        didSet {
+            print("setting DaylyEditing.templates")
+        }
+    }
 }
 
 extension DaylyEditing{
@@ -43,6 +42,13 @@ extension DaylyEditing{
         }
         return ["weekCalendar": wk]
     }
+}
+
+
+struct DayGroupEditing: Identifiable {
+    let id = UUID()
+    var applicableTo : Set<Days> = Set<Days>()
+    var template : DayTemplate = DayTemplate()
 }
 
 

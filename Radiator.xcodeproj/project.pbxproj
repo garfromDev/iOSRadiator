@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		300741B821DBE35A008BFFAA /* FTPfileUploader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300741B721DBE35A008BFFAA /* FTPfileUploader.swift */; };
 		301DDA3823C12CAE00B96AC5 /* CalendarsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301DDA3723C12CAE00B96AC5 /* CalendarsTableViewController.swift */; };
+		3024D0BE254C3175002AD75F /* testCalendars.json in Resources */ = {isa = PBXBuildFile; fileRef = 3063FEDD23BF1558006F6F83 /* testCalendars.json */; };
+		3024D0C5254C3538002AD75F /* DayGroupEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3024D0C4254C3538002AD75F /* DayGroupEditing.swift */; };
 		3033470923FF309600B5EB74 /* MainMenuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3033470823FF309600B5EB74 /* MainMenuController.swift */; };
 		3037CAAE23B921440071CAE1 /* CalendarTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3037CAAD23B921440071CAE1 /* CalendarTableView.swift */; };
 		3037CAB923B94A430071CAE1 /* radiatorTestPlayground.h in Headers */ = {isa = PBXBuildFile; fileRef = 3037CAB723B94A430071CAE1 /* radiatorTestPlayground.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -23,6 +25,7 @@
 		3037CAC723B94B250071CAE1 /* FilesProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; };
 		3037CAC823B94B250071CAE1 /* FilesProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		303C69AC21E3E6C100EABBF6 /* CalendarObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303C69A821E3E6C000EABBF6 /* CalendarObject.swift */; };
+		304D1D722548B71F0034ECD7 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304D1D712548B71F0034ECD7 /* log.swift */; };
 		3063FEDE23BF1558006F6F83 /* testCalendars.json in Resources */ = {isa = PBXBuildFile; fileRef = 3063FEDD23BF1558006F6F83 /* testCalendars.json */; };
 		3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067011021D913AA008C7A53 /* UserInteraction.swift */; };
 		3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */; };
@@ -39,6 +42,7 @@
 		30883FE924EB182300725582 /* DaylyTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30883FE824EB182300725582 /* DaylyTiming.swift */; };
 		30B2829C21DC0C5400CE731C /* FilesProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; };
 		30B2829D21DC0C5400CE731C /* FilesProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		30EF09A1254E0B6100A0E66E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30EF09A0254E0B6100A0E66E /* SwiftUI.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		30F369282532496C0001A8C7 /* week.json in Resources */ = {isa = PBXBuildFile; fileRef = 30F369242532496C0001A8C7 /* week.json */; };
 		30F4685F23BB78080011B3C9 /* TestFiles.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30F4685E23BB78080011B3C9 /* TestFiles.xcassets */; };
 /* End PBXBuildFile section */
@@ -123,6 +127,7 @@
 /* Begin PBXFileReference section */
 		300741B721DBE35A008BFFAA /* FTPfileUploader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FTPfileUploader.swift; sourceTree = "<group>"; };
 		301DDA3723C12CAE00B96AC5 /* CalendarsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarsTableViewController.swift; sourceTree = "<group>"; };
+		3024D0C4254C3538002AD75F /* DayGroupEditing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayGroupEditing.swift; sourceTree = SOURCE_ROOT; };
 		3033470823FF309600B5EB74 /* MainMenuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenuController.swift; sourceTree = "<group>"; };
 		3037CAAD23B921440071CAE1 /* CalendarTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarTableView.swift; sourceTree = "<group>"; };
 		3037CAAF23B9494A0071CAE1 /* radiatorTestPlayground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = radiatorTestPlayground.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -130,6 +135,7 @@
 		3037CAB723B94A430071CAE1 /* radiatorTestPlayground.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = radiatorTestPlayground.h; sourceTree = "<group>"; };
 		3037CAB823B94A430071CAE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		303C69A821E3E6C000EABBF6 /* CalendarObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarObject.swift; sourceTree = "<group>"; };
+		304D1D712548B71F0034ECD7 /* log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = SOURCE_ROOT; };
 		3063FEDD23BF1558006F6F83 /* testCalendars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testCalendars.json; sourceTree = "<group>"; };
 		3067011021D913AA008C7A53 /* UserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteraction.swift; sourceTree = "<group>"; };
 		3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteractionManager.swift; sourceTree = "<group>"; };
@@ -151,6 +157,7 @@
 		3077E56321CC333D00814343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		30883FE824EB182300725582 /* DaylyTiming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaylyTiming.swift; sourceTree = "<group>"; };
 		30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FilesProvider.xcodeproj; path = FileProvider/FilesProvider.xcodeproj; sourceTree = "<group>"; };
+		30EF09A0254E0B6100A0E66E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		30F369242532496C0001A8C7 /* week.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = week.json; sourceTree = "<group>"; };
 		30F4685E23BB78080011B3C9 /* TestFiles.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TestFiles.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -168,6 +175,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30EF09A1254E0B6100A0E66E /* SwiftUI.framework in Frameworks */,
 				30B2829C21DC0C5400CE731C /* FilesProvider.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -192,6 +200,7 @@
 		301DDA3D23C12F6E00B96AC5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				3024D0C4254C3538002AD75F /* DayGroupEditing.swift */,
 				3067011021D913AA008C7A53 /* UserInteraction.swift */,
 				3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */,
 				303C69A821E3E6C000EABBF6 /* CalendarObject.swift */,
@@ -235,6 +244,7 @@
 		3037CAC623B94B250071CAE1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				30EF09A0254E0B6100A0E66E /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -242,6 +252,7 @@
 		306B42252407F5A50044EF8F /* Support */ = {
 			isa = PBXGroup;
 			children = (
+				304D1D712548B71F0034ECD7 /* log.swift */,
 				306B42262407F5F70044EF8F /* JsonCodable.swift */,
 			);
 			path = Support;
@@ -514,6 +525,7 @@
 				3077E54C21CC333B00814343 /* LaunchScreen.storyboard in Resources */,
 				3077E54921CC333B00814343 /* Assets.xcassets in Resources */,
 				3077E54721CC333900814343 /* Main.storyboard in Resources */,
+				3024D0BE254C3175002AD75F /* testCalendars.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -566,7 +578,9 @@
 				30883FE924EB182300725582 /* DaylyTiming.swift in Sources */,
 				3077E54221CC333800814343 /* AppDelegate.swift in Sources */,
 				3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */,
+				3024D0C5254C3538002AD75F /* DayGroupEditing.swift in Sources */,
 				3033470923FF309600B5EB74 /* MainMenuController.swift in Sources */,
+				304D1D722548B71F0034ECD7 /* log.swift in Sources */,
 				306B42212407F3C90044EF8F /* UI_protocols.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -805,7 +819,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QXYQ94XRJK;
 				INFOPLIST_FILE = Radiator/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -825,7 +839,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QXYQ94XRJK;
 				INFOPLIST_FILE = Radiator/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
