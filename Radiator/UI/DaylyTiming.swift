@@ -149,9 +149,8 @@ var body: some View {
     // FIXME : charger un CalendarObject pour plugguer les vues sur lui
     
     static var previews: some View {
-        let jcal = UserInteractionManager.shared.weekCalendars.first!
-        let cal: WeekCalendar = jcal.value["weekCalendar"]!
-        return MultipleDayly(cal: DaylyEditing(from:cal))
+        let mng = UserInteractionManagerIos13(distantFileManager: FTPfileUploader())
+        return MultipleDayly(cal: mng.daylyEditings.first!).environmentObject(mng)
     }
 }
 

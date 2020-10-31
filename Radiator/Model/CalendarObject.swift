@@ -102,7 +102,7 @@ extension Calendars: jsonCodable {
     typealias T = Calendars
 }
 
-/// add DataSource capability
+//MARK:  add DataSource capability
 extension Calendars: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return self.list.count
@@ -125,6 +125,7 @@ extension Calendars: UITableViewDataSource {
     }
 }
 
+// MARK: add debug description
 extension Calendars{
     override var debugDescription: String {
         var str = "current cal : \(currentCalendar)\n"

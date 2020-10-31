@@ -71,6 +71,7 @@ class UserInteractionManager:NSObject{
     
     
     func pushUpdate(){
+        
         self.serializer.push(data:self.userInteraction.toJson(),
                                      filename: Files.userInteraction)
         self.serializer.push(data: self.calendars.toJson(),
