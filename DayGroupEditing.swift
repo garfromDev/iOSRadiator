@@ -35,7 +35,12 @@ extension DaylyEditing{
     }
     
     func toCalendarObject()->CalendarObject {
-        var wk: WeekCalendar = Days.map({[$0.rawValue: DayCalendar()]})
+        var wk = WeekCalendar()
+        for template in templates{
+            for day in template.applicableTo{
+                wk[day] = DayCalendar.fromDayTemplate( template.template)
+            }
+        }
         return ["weekCalendar": wk]
     }
 }
@@ -48,7 +53,7 @@ extension DayTemplate{
     init(from  dc: DayCalendar){
         var quarters : Array<QuarterTemplate> = []
         for(hour, mode) in dc{
-            quarters.append(QuarterTemplate(heatmode: mode, hour: hour))
+            quarters.append(QuarterTemplate(heatMode: mode, hour: hour))
         }
         self.init(quarters: quarters)
     }
@@ -56,7 +61,7 @@ extension DayTemplate{
 
 
 struct QuarterTemplate: Equatable {
-    var heatmode : HeatingMode
+    var heatMode : HeatingMode
     var hour: String = ""
 }
 

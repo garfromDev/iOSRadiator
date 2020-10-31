@@ -26,9 +26,12 @@ extension HeatingMode: jsonCodable{
  keys are hours in 08:15 format, every 15 mn*/
 typealias DayCalendar = [Hours:HeatingMode]
 extension DayCalendar {
-    init(from: DayTemplate){
-        // FIXME implement
-        self.init()
+    static func fromDayTemplate(_  dt: DayTemplate)->DayCalendar{
+        var dc = DayCalendar()
+        dt.quarters.forEach({quarter in
+            dc[quarter.hour as Hours] = quarter.heatMode
+        })
+        return dc
     }
 }
 /** description of settings for the week
