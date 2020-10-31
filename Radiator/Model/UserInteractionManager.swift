@@ -44,7 +44,15 @@ class UserInteractionManager:NSObject{
     var weekCalendars : [FileName : CalendarObject] = [:]
     
     // singleton
-    static var shared = UserInteractionManager(distantFileManager: FTPfileUploader())
+    static var shared : UserInteractionManager {
+        get {
+            if #available(iOS 13, *){
+                return UserInteractionManagerIos13(distantFileManager: FTPfileUploader())}
+            else{
+                return UserInteractionManagerIos9(distantFileManager: FTPfileUploader())
+            }
+        }
+    }
     static let updateUInotification = Notification.Name("updateUI")
     static let distantFileErrorNotification = Notification.Name("distantFileError")
     static let standardCalendarFile = "week.json"
@@ -178,10 +186,17 @@ class UserInteractionManager:NSObject{
     
 } // end of class UserInteractionManager
 
+protocol DaylyEditingProvider{
+    var daylyEditings: Array<DaylyEditing> {get set}
+}
+
 @available(iOS 13.0, *)
-extension UserInteractionManager: ObservableObject{
-    //FIXME : comment implémneter @Pusblished?
-    /* on laisse tomber les anciennes versions?
-    voir https://www.swiftbysundell.com/articles/published-properties-in-swift/
-     */
+/** ssubclass of UserInterazctionManager with support of observableObject*/
+class UserInteractionManagerIos13: UserInteractionManager, ObservableObject {
+    @Published var daylyEditings: Array<DaylyEditing> = []
+}
+
+@available(iOS, introduced: 9.3, deprecated: 13.0, message: "Use swift UI")
+class UserInteractionManagerIos9: UserInteractionManager, DaylyEditingProvider{
+    var daylyEditings: Array<DaylyEditing> = []
 }
