@@ -177,3 +177,11 @@ class UserInteractionManager:NSObject{
     
     
 } // end of class UserInteractionManager
+
+@available(iOS 13.0, *)
+extension UserInteractionManager: ObservableObject{
+    //FIXME : comment implémneter @Pusblished?
+    /* on laisse tomber les anciennes versions?
+    voir https://www.swiftbysundell.com/articles/published-properties-in-swift/
+     */
+}

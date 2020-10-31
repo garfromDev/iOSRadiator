@@ -50,8 +50,8 @@ extension HeatingMode {
     
     var body : some View {
         VStack{
-            Button(action:{self.quarter.heatmode.toogle()}){
-                if quarter.heatmode == .confort{
+            Button(action:{self.quarter.heatMode.toogle()}){
+                if quarter.heatMode == .confort{
                     Text("🀫").fontWeight(.bold).foregroundColor(.red)
                 }else{
                     Text("🀆").fontWeight(.bold).foregroundColor(.blue)
@@ -64,7 +64,7 @@ extension HeatingMode {
 
 
 @available(iOS 13, *) struct Fill: View{
-    @State var qh = QuarterTemplate(heatmode: .confort, hour: "08")
+    @State var qh = QuarterTemplate(heatMode: .confort, hour: "08")
     var body: some View {
         // tenter forEach qhtab.enumerated()  index, qh in $qhtab[index]
         Group{
@@ -133,7 +133,7 @@ var body: some View {
 
 
 @available(iOS 13, *) struct MultipleDayly: View {
-    @State var cal:CalendarObject
+    @State var cal:DaylyEditing
     
     var body: some View{
         VStack(alignment: .leading) {
@@ -150,8 +150,8 @@ var body: some View {
     
     static var previews: some View {
         let jcal = UserInteractionManager.shared.weekCalendars.first!
-        let cal = jcal.value
-        return MultipleDayly(cal: cal)
+        let cal: WeekCalendar = jcal.value["weekCalendar"]!
+        return MultipleDayly(cal: DaylyEditing(from:cal))
     }
 }
 
