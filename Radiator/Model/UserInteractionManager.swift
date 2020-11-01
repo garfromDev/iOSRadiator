@@ -195,7 +195,7 @@ class UserInteractionManagerIos13: UserInteractionManager, ObservableObject {
     @Published var daylyEditing: DaylyEditing = DaylyEditing() 
     override func pullCalendars(handler completionHandler: @escaping (Result<Calendars, IOError>  ) -> Void) {
         super.pullCalendars(handler: completionHandler)
-        if let wk = weekCalendars[calendars.currentCalendar]?["weekCalendar"] {
+        if let wk = weekCalendars[calendars.currentCalendar]?.weekCalendar {
             self.daylyEditing = DaylyEditing(from: wk)
         }
     }

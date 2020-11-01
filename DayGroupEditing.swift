@@ -34,13 +34,14 @@ extension DaylyEditing{
     }
     
     func toCalendarObject()->CalendarObject {
+        // FIXME : ajouter generation des template IDS
         var wk = WeekCalendar()
         for template in templates{
             for day in template.applicableTo{
                 wk[day] = DayCalendar.fromDayTemplate( template.template)
             }
         }
-        return ["weekCalendar": wk]
+        return CalendarObject(weekCalendar: wk)
     }
 }
 

@@ -9,6 +9,17 @@ enum Days:String, Codable, CaseIterable{
     case Friday
     case Saturday
     case Sunday
+    func ToLetter()->String {
+        return [
+            .Monday     : "L",
+            .Tuesday    : "M",
+            .Wenesday   : "M",
+            .Thursday   : "J",
+            .Friday     : "V",
+            .Saturday   : "S",
+            .Sunday     : "D"
+        ][self]!
+    }
 }
 
 extension Days: jsonCodable {
@@ -42,11 +53,14 @@ typealias WeekCalendar = [Days : DayCalendar]
  with python Radiator, only key is : weekCalendar
  this object can be encoded using JSON encoder and provide correct file format
  */
-typealias CalendarObject   = [String:WeekCalendar]
+struct CalendarObject {
+    var weekCalendar: WeekCalendar
+    var templatesIds : [Days: UUID] = [:]
+}
 extension CalendarObject{
     func toJCalendarObject()->JCalendarObject{
         var wk : JWeekCalendar = [:]
-        for (k, v) in self["weekCalendar"]! {
+        for (k, v) in self.weekCalendar {
             wk[k.rawValue as JDays] = v
         }
         return ["weekCalendar" : wk]
@@ -74,13 +88,14 @@ extension JCalendarObject{
      Transform JCalendarObject we get from Json into CalendarObject with strong type (enum)
      */
     func toCalendarObject()->CalendarObject {
+        // FIXME : implement recuperation des templates ID
         var wk : WeekCalendar = [:]
         for (k, v) in self["weekCalendar"]! {
             if let day = Days(rawValue: k) {
                 wk[day] = v
             }
         }
-        return ["weekCalendar" : wk]
+        return CalendarObject(weekCalendar: wk)
     }
     
 

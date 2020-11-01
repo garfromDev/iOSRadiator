@@ -22,13 +22,13 @@ import SwiftUI
  */
 
 // données de démo
-let week = [DayIndicator(letter: "L", active: true),
-            DayIndicator(letter: "M", active: true),
-            DayIndicator(letter: "M", active: true),
-            DayIndicator(letter: "J", active: true),
-            DayIndicator(letter: "V", active: false),
-            DayIndicator(letter: "S", active: true),
-            DayIndicator(letter: "D", active: false)
+let week = [DayIndicator(day: .Monday, active: true),
+            DayIndicator(day: .Tuesday, active: true),
+            DayIndicator(day: .Wenesday, active: true),
+            DayIndicator(day: .Thursday, active: true),
+            DayIndicator(day: .Friday, active: false),
+            DayIndicator(day: .Saturday, active: true),
+            DayIndicator(day: .Sunday, active: false)
 ]
 
 
@@ -95,21 +95,25 @@ extension HeatingMode {
     }
 }
 
+
 struct DayIndicator: Hashable{
-    let letter: String
+    let day: Days
     var active: Bool
+    static func indicators( fromSet set: Set<Days>) -> [DayIndicator] {
+        return [] // FIXME encore utile?
+    }
 }
 
 
+
 @available(iOS 13, *) struct WeekOverview: View {
-   @State  var days: [DayIndicator]
+    @State var days: [DayIndicator]
 
 var body: some View {
-    
         HStack{
             ForEach(0..<7){jour in
                 Button(action: {self.days[jour].active.toggle()}){
-                    Text(self.days[jour].letter)
+                    Text(self.days[jour].day.ToLetter())
                         .foregroundColor(self.days[jour].active ? .black : .gray)}
                 .font(.caption)
             }
@@ -122,7 +126,7 @@ var body: some View {
     var dayGroup: DayGroupEditing
     var body: some View {
         VStack(alignment: .leading) {
-            WeekOverview(days: week)
+            WeekOverview(days: DayIndicator.indicators(fromSet: dayGroup.applicableTo))
             Divider()
             ScrollView(.horizontal){
                 HStack {
