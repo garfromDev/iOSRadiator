@@ -118,7 +118,7 @@ var body: some View {
     var dayGroup: DayGroupEditing
     var body: some View {
         VStack(alignment: .leading) {
-            WeekOverview(days: DayIndicator.indicators(fromSet: dayGroup.applicableTo))
+            WeekOverview(days: dayGroup.applicableTo)
             Divider()
             ScrollView(.horizontal){
                 HStack {

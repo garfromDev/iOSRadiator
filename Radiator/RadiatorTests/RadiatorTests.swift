@@ -120,7 +120,7 @@ class CalendarsTests: XCTestCase {
         NotificationCenter.default.addObserver(self, selector: #selector(receivedUpdateUi(_:))
             , name: UserInteractionManager.updateUInotification,
               object : nil)
-        UserInteractionManager.shared = UserInteractionManager(distantFileManager: FTPfileUploader())
+        //UserInteractionManager.shared = UserInteractionManager(distantFileManager: FTPfileUploader())
         UserInteractionManager.shared.pushUpdate()
         wait(for: [positive_response], timeout: 20)
     }
@@ -191,7 +191,7 @@ class CalendarsTests: XCTestCase {
         }
         XCTAssertEqual(jcal["weekCalendar"]?["Monday"]?["05:15"], HeatingMode.eco)
         let cal = jcal.toCalendarObject()
-        XCTAssertEqual(cal["weekCalendar"]?[Days.Monday]?["05:15"], HeatingMode.eco)
+        XCTAssertEqual(cal.weekCalendar[Days.Monday]?["05:15"], HeatingMode.eco)
     }
 
     
@@ -205,7 +205,7 @@ class CalendarsTests: XCTestCase {
     }
     
     func testModesToJson(){
-        let eco=Modes.eco
+        let eco=HeatingMode.eco
         let json = eco.toJson()
         print(String(data: json, encoding: .utf8)!)
     }
@@ -215,23 +215,46 @@ class CalendarsTests: XCTestCase {
     \"confort\"
     """
         let data = str.data(using: String.Encoding.utf8)!
-        let mode = Modes.fromJson(data)
+        let mode = HeatingMode.fromJson(data)
         XCTAssertEqual(mode, .confort)
     }
-    
-
     
     
     func testCalendarObjectToJson() {
         let dc : DayCalendar = ["16:00": .confort,
                                 "18:00" : .eco]
         let wk : WeekCalendar = [ Days.Tuesday : dc]
-        let co : CalendarObject = ["weekCalendar" : wk]
+        let co = CalendarObject(weekCalendar:  wk)
         let json = co.toJCalendarObject().toJson()
         
         let jcal = JCalendarObject.fromJson(json)
         let cal = jcal?.toCalendarObject()
-        XCTAssertEqual(cal!["weekCalendar"]![Days.Tuesday]!["16:00"], HeatingMode.confort)
+        XCTAssertEqual(cal!.weekCalendar[Days.Tuesday]!["16:00"], HeatingMode.confort)
+    }
+    
+    // MARK: DaylyEditing from JCalendarObject
+    func testDaylyEditingFromJCalendarObject(){
+        let appBundle = Bundle(for: type(of: self))
+        guard let file = appBundle.url(forResource: "week", withExtension: "json") else {
+            XCTFail("week.json not found")
+            return
+        }
+        XCTAssertNoThrow(try Data(contentsOf: file))
+        let data = try? Data(contentsOf: file)
+        guard let jcal:JCalendarObject = JCalendarObject.fromJson(data!) else {
+            XCTFail("unable to decode json for CalendarObject")
+            return
+        }
+        let cal = jcal.toCalendarObject()
+        let de = DaylyEditing(from: cal.weekCalendar)
+        XCTAssertEqual(de.templates.count, 3)
+        let monday = de.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Monday, active: true))})
+        XCTAssertNotNil(monday)
+        XCTAssertNotNil(monday!.applicableTo.contains(DayIndicator(day: .Sunday, active: false)))
+        XCTAssertEqual(monday!.dayTemplate.quarters.first(where: {$0.hour == "00:00"})!.heatMode, .eco)
+        XCTAssertEqual(monday!.dayTemplate.quarters.first(where: {$0.hour == "15:30"})!.heatMode, .confort)
+        let sunday = de.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Sunday, active: true))})
+        XCTAssertEqual(sunday!.dayTemplate.quarters.first(where: {$0.hour == "23:30"})!.heatMode, .confort)
     }
     
 } //end CalendarsTest

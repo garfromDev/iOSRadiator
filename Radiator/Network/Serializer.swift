@@ -32,17 +32,23 @@ class Serializer: SerialFileAction {
     
     
     func pull(filename: FileName, handler: @escaping DataCompletionHandler) {
+        print("serializer sending request to sendRequestQueue for pulling \(filename)")
         sendRequestQueue.async {
             // first wait that any opened ftp Operation is finished
-            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
-            self.handleCallbackQueue.async(){
-                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
-                self.distantFileManager.pull(fileName: filename){
-                    (result:DataOperationResult) in
-                    self.dfAccessSemaphore.signal() // release access for next operation
-                    handler(result)
-                } //end of pull callback
-            } // end of handleCallBack operation
+            print("serializer waiting semaphore for pulling \(filename)")
+            if self.dfAccessSemaphore.wait(timeout: .now() + DispatchTimeInterval.seconds(20)) == .success {
+                print("serializer sending request to handleCallbackQueue for pulling \(filename)")
+                self.handleCallbackQueue.async(){
+                    //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                    print("serializer actually pulling \(filename)")
+                    self.distantFileManager.pull(fileName: filename){
+                        (result:DataOperationResult) in
+                        print("serializer finished pulling \(filename), release semaphore")
+                        self.dfAccessSemaphore.signal() // release access for next operation
+                        handler(result)
+                    } //end of pull callback
+                } // end of handleCallBack operation
+            }
         } // end of waiting queue operation
     } //end of function
     
@@ -50,30 +56,34 @@ class Serializer: SerialFileAction {
     func push(data: Data, filename: String, handler: @escaping DataCompletionHandler = {_ in }) {
         sendRequestQueue.async {
             // first wait that any opened ftp Operation is finished
-            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
-            self.handleCallbackQueue.async(){
-                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
-                self.distantFileManager.push(data: data, fileName: filename){
-                    (result:DataOperationResult) in
-                    self.dfAccessSemaphore.signal() // release access for next operation
-                    handler(result)
-                } //end of pull callback
-            } // end of handleCallBack operation
+            print("serializer waiting semaphore for pushing \(filename)")
+            if self.dfAccessSemaphore.wait(timeout: .now() + DispatchTimeInterval.seconds(40)) == .success {
+                self.handleCallbackQueue.async(){
+                    //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                    self.distantFileManager.push(data: data, fileName: filename){
+                        (result:DataOperationResult) in
+                        print("serializer finished pushing \(filename), release semaphore")
+                        self.dfAccessSemaphore.signal() // release access for next operation
+                        handler(result)
+                    } //end of pull callback
+                } // end of handleCallBack operation
+            } // do nothing in case of timeout
         } // end of waiting queue operation
     }
     
     func copyItem(path: String, to toPath: String, completionHandler: @escaping DataCompletionHandler = Serializer.defaultErrorHandler){
         sendRequestQueue.async {
             // first wait that any opened ftp Operation is finished
-            _ = self.dfAccessSemaphore.wait(timeout: .now() + 20)
-            self.handleCallbackQueue.async(){
-                //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
-                self.distantFileManager.copyItem(path: path, to: toPath, overwrite: true){
-                    (result:DataOperationResult) in
-                    self.dfAccessSemaphore.signal() // release access for next operation
-                    completionHandler(result)
-                } //end of pull callback
-            } // end of handleCallBack operation
+            if self.dfAccessSemaphore.wait(timeout: .now() + DispatchTimeInterval.seconds(20)) == .success {
+                self.handleCallbackQueue.async(){
+                    //treatment done on other serial queue, because sendRequestQueue may be bloqued by wait()
+                    self.distantFileManager.copyItem(path: path, to: toPath, overwrite: true){
+                        (result:DataOperationResult) in
+                        self.dfAccessSemaphore.signal() // release access for next operation
+                        completionHandler(result)
+                    } //end of pull callback
+                } // end of handleCallBack operation
+            }
         } // end of waiting queue operation
     }
     
