@@ -54,8 +54,8 @@ typealias WeekCalendar = [Days : DayCalendar]
  this object can be encoded using JSON encoder and provide correct file format
  */
 struct CalendarObject {
+    // FIXME : a-t-on réelement besoind e CalendarObject?
     var weekCalendar: WeekCalendar
-    var templatesIds : [Days: UUID] = [:]
 }
 extension CalendarObject{
     func toJCalendarObject()->JCalendarObject{

@@ -96,14 +96,6 @@ extension HeatingMode {
 }
 
 
-struct DayIndicator: Hashable{
-    let day: Days
-    var active: Bool
-    static func indicators( fromSet set: Set<Days>) -> [DayIndicator] {
-        return [] // FIXME encore utile?
-    }
-}
-
 
 
 @available(iOS 13, *) struct WeekOverview: View {

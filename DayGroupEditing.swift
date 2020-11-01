@@ -21,9 +21,9 @@ extension DaylyEditing{
         var provTemplates: [DayGroupEditing] = []
         for (days, dayCalendar) in wk {
             let newTemplate = DayTemplate(from: dayCalendar)
-            if let index = provTemplates.map({$0.template}).firstIndex(of: newTemplate) {
+            if let index = provTemplates.map({$0.dayTemplate}).firstIndex(of: newTemplate) {
                 // this template is already listed, add this day to applicable days
-                provTemplates[index].applicableTo.formUnion(Set(arrayLiteral: days))
+                provTemplates[index].addDay(day: days)
             } else {
                 // template not listed, add it for this day
                 provTemplates.append(DayGroupEditing(applicableTo: Set(arrayLiteral: days),
@@ -38,7 +38,7 @@ extension DaylyEditing{
         var wk = WeekCalendar()
         for template in templates{
             for day in template.applicableTo{
-                wk[day] = DayCalendar.fromDayTemplate( template.template)
+                //wk[day.] = DayCalendar.fromDayTemplate( template.template)
             }
         }
         return CalendarObject(weekCalendar: wk)
@@ -46,10 +46,22 @@ extension DaylyEditing{
 }
 
 
+struct DayIndicator: Hashable{
+    let day: Days
+    var active: Bool
+}
+
+// crerr un type pour [DaysIndicator] ou une extension de Array pour ce type
+
 struct DayGroupEditing: Identifiable {
     let id = UUID()
-    var applicableTo : Set<Days> = Set<Days>()
-    var template : DayTemplate = DayTemplate()
+    var applicableTo : [DayIndicator]
+    var dayTemplate : DayTemplate = DayTemplate()
+    @discardableResult mutating func addDay(day: Days)->DayGroupEditing{
+        if let index = self.applicableTo.firstIndex(where: {$0.day == day}){
+            self.applicableTo[index].active = true
+        } // FIXME: vérifier les initialisations, il faut que tous les days existent dans les dayIndicator
+    }
 }
 
 
