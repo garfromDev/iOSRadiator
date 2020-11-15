@@ -39,6 +39,7 @@
 		3077E54C21CC333B00814343 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3077E54A21CC333B00814343 /* LaunchScreen.storyboard */; };
 		3077E55721CC333C00814343 /* RadiatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E55621CC333C00814343 /* RadiatorTests.swift */; };
 		3077E56221CC333D00814343 /* RadiatorUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3077E56121CC333D00814343 /* RadiatorUITests.swift */; };
+		30862491255C2CDE003C0D4C /* testDayTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30862490255C2CDE003C0D4C /* testDayTemplate.swift */; };
 		30883FE924EB182300725582 /* DaylyTiming.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30883FE824EB182300725582 /* DaylyTiming.swift */; };
 		30B2829C21DC0C5400CE731C /* FilesProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; };
 		30B2829D21DC0C5400CE731C /* FilesProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -155,6 +156,7 @@
 		3077E55D21CC333D00814343 /* RadiatorUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RadiatorUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3077E56121CC333D00814343 /* RadiatorUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadiatorUITests.swift; sourceTree = "<group>"; };
 		3077E56321CC333D00814343 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		30862490255C2CDE003C0D4C /* testDayTemplate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = testDayTemplate.swift; sourceTree = "<group>"; };
 		30883FE824EB182300725582 /* DaylyTiming.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaylyTiming.swift; sourceTree = "<group>"; };
 		30B2828D21DC0C1800CE731C /* FilesProvider.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = FilesProvider.xcodeproj; path = FileProvider/FilesProvider.xcodeproj; sourceTree = "<group>"; };
 		30EF09A0254E0B6100A0E66E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -303,6 +305,7 @@
 				3063FEDD23BF1558006F6F83 /* testCalendars.json */,
 				30F369242532496C0001A8C7 /* week.json */,
 				3077E55621CC333C00814343 /* RadiatorTests.swift */,
+				30862490255C2CDE003C0D4C /* testDayTemplate.swift */,
 				3077E55821CC333D00814343 /* Info.plist */,
 				30F4685E23BB78080011B3C9 /* TestFiles.xcassets */,
 			);
@@ -589,6 +592,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30862491255C2CDE003C0D4C /* testDayTemplate.swift in Sources */,
 				3077E55721CC333C00814343 /* RadiatorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

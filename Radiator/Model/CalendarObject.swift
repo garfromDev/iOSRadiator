@@ -9,6 +9,26 @@ enum Days:String, Codable, CaseIterable{
     case Friday
     case Saturday
     case Sunday
+    
+    var sequence: Int {
+        switch self{
+        case .Monday:
+            return 1
+        case .Tuesday:
+            return 2
+        case .Wenesday:
+            return 3
+        case .Thursday:
+            return 4
+        case .Friday:
+            return 5
+        case .Saturday:
+            return 6
+        case .Sunday:
+            return 7
+        }
+    }
+    
     func ToLetter()->String {
         return [
             .Monday     : "L",
@@ -20,6 +40,7 @@ enum Days:String, Codable, CaseIterable{
             .Sunday     : "D"
         ][self]!
     }
+    
 }
 
 extension Days: jsonCodable {
@@ -27,7 +48,16 @@ extension Days: jsonCodable {
 }
 
 typealias Hours=String
-
+extension Hours {
+    func toMinutes()->Int{
+        return self.split(separator: ":").map({Int($0)!}).reduce(0) { (a, b) in a * 60 + b
+        }
+    }
+    
+    static func < (lhs: Hours, rhs: Hours) -> Bool {
+        return lhs.toMinutes() < rhs.toMinutes()
+    }
+}
 
 extension HeatingMode: jsonCodable{
     typealias T = HeatingMode
@@ -54,7 +84,7 @@ typealias WeekCalendar = [Days : DayCalendar]
  this object can be encoded using JSON encoder and provide correct file format
  */
 struct CalendarObject {
-    // FIXME : a-t-on réelement besoind e CalendarObject?
+    // FIXME : a-t-on réelement besoin de CalendarObject?
     var weekCalendar: WeekCalendar
 }
 extension CalendarObject{

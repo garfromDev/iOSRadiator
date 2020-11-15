@@ -8,37 +8,48 @@
 
 import Foundation
 
-struct DaylyEditing {
+class DaylyEditing {
     var templates: [DayGroupEditing] = [] {
         didSet {
             print("setting DaylyEditing.templates")
+            templates.forEach({t in t.daylyEditing = self})
         }
     }
-}
 
-extension DaylyEditing{
-    init(from wk:WeekCalendar){
-        var provTemplates: [DayGroupEditing] = []
+    convenience init(from wk:WeekCalendar){
+        //var provTemplates: [DayGroupEditing] = []
+        self.init()
         for (days, dayCalendar) in wk {
             let newTemplate = DayTemplate(from: dayCalendar)
-            if let index = provTemplates.map({$0.dayTemplate}).firstIndex(of: newTemplate) {
+            if let index = self.templates.map({$0.dayTemplate}).firstIndex(of: newTemplate) {
                 // this template is already listed, add this day to applicable days
-                provTemplates[index].addDay(day: days)
+                self.templates[index].addDay(day: days)
             } else {
                 // template not listed, add it for this day
-                provTemplates.append(DayGroupEditing(applicableTo: DayIndicators.forDay(days),
-                                                     dayTemplate: newTemplate))
+                self.templates.append(DayGroupEditing(applicableTo: DayIndicators.forDays([days]),
+                                                      dayTemplate: newTemplate)
+                )
             }
         }
-        self.init(templates: provTemplates)
+    }
+    
+    /**
+     A day has been added to a group
+     remove this day from the others group
+     */
+    func addedDay(_ day:Days, to dayGroup :DayGroupEditing){
+        for template in self.templates where template !== dayGroup {
+            if let index = template.applicableTo.firstIndex(of: DayIndicator(day: day, active: true)){
+                template.applicableTo[index].active = false  // set the day to inactive
+            }
+        }
     }
     
     func toCalendarObject()->CalendarObject {
-        // FIXME : ajouter generation des template IDS
         var wk = WeekCalendar()
         for template in templates{
             for day in template.applicableTo{
-                //wk[day.] = DayCalendar.fromDayTemplate( template.template)
+                wk[day.day] = DayCalendar.fromDayTemplate(template.dayTemplate)
             }
         }
         return CalendarObject(weekCalendar: wk)
@@ -46,15 +57,29 @@ extension DaylyEditing{
 }
 
 
-struct DayGroupEditing: Identifiable {
+class DayGroupEditing: Identifiable {
     let id = UUID()
     var applicableTo : DayIndicators
     var dayTemplate : DayTemplate = DayTemplate()
-    @discardableResult mutating func addDay(day: Days)->DayGroupEditing{
+    var daylyEditing: DaylyEditing!
+    
+    init(applicableTo : DayIndicators, dayTemplate : DayTemplate){
+        self.applicableTo = applicableTo
+        self.dayTemplate = dayTemplate
+    }
+    
+    
+    /** make this DayGroupEditing applicable to this day in addition of already applicables days
+      NOTE : could use didset and before/after comparison instead of AddDay()
+     */
+    @discardableResult func addDay(day: Days)->DayGroupEditing{
         if let index = self.applicableTo.firstIndex(where: {$0.day == day}){
             self.applicableTo[index].active = true
+        }else{  // not used because we initialize DayIndicators with full days, but better be sure
+            self.applicableTo.append(DayIndicator(day: day, active: true))
         }
-        return self
+        daylyEditing?.addedDay(day, to: self)
+        return self  // for chaining
     }
 }
 
@@ -62,10 +87,10 @@ struct DayGroupEditing: Identifiable {
 typealias DayIndicators = [DayIndicator]
 extension DayIndicators {
     /** return DayIndicator with this day activated */
-    static func forDay(_ day:Days)->DayIndicators {
+    static func forDays(_ days:Set<Days>)->DayIndicators {
         return Days.allCases.map {
             cday in DayIndicator(day: cday,
-                                 active: cday == day)
+                                 active: days.contains(cday))
         }
     }
 }
@@ -85,12 +110,15 @@ extension DayTemplate{
         for(hour, mode) in dc{
             quarters.append(QuarterTemplate(heatMode: mode, hour: hour))
         }
-        self.init(quarters: quarters)
+        self.init(quarters: quarters.sorted())
     }
 }
 
 
-struct QuarterTemplate: Equatable {
+struct QuarterTemplate: Equatable, Comparable {
     var heatMode : HeatingMode
     var hour: String = ""
+    static func < (lhs: QuarterTemplate, rhs: QuarterTemplate) -> Bool {
+        return lhs.hour < rhs.hour
+    }
 }

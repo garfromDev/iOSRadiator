@@ -255,6 +255,12 @@ class CalendarsTests: XCTestCase {
         XCTAssertEqual(monday!.dayTemplate.quarters.first(where: {$0.hour == "15:30"})!.heatMode, .confort)
         let sunday = de.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Sunday, active: true))})
         XCTAssertEqual(sunday!.dayTemplate.quarters.first(where: {$0.hour == "23:30"})!.heatMode, .confort)
+        
+        let rcal = de.toCalendarObject()
+        let rjcal = rcal.toJCalendarObject()
+        print(rjcal)
+        
     }
+    
     
 } //end CalendarsTest
