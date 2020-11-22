@@ -48,7 +48,7 @@ class DaylyEditing {
     func toCalendarObject()->CalendarObject {
         var wk = WeekCalendar()
         for template in templates{
-            for day in template.applicableTo{
+            for day in template.applicableTo.filter({$0.active}) {
                 wk[day.day] = DayCalendar.fromDayTemplate(template.dayTemplate)
             }
         }

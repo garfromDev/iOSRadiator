@@ -1,6 +1,11 @@
 import Foundation
 import UIKit
 
+/*
+ JSON -> JCalendarObjetc -> CalendarObject -> DaylyEditings  : use natural decoding
+ DaylyEditings -> CalendarObject -> JSON  : use custome encoding to keek days and hours in order
+ */
+
 enum Days:String, Codable, CaseIterable{
     case Monday
     case Tuesday
@@ -40,7 +45,12 @@ enum Days:String, Codable, CaseIterable{
             .Sunday     : "D"
         ][self]!
     }
-    
+}
+
+extension Days : Comparable {
+    static func < (lhs: Days, rhs: Days) -> Bool {
+        return lhs.sequence < rhs.sequence
+    }
 }
 
 extension Days: jsonCodable {
@@ -74,11 +84,31 @@ extension DayCalendar {
         })
         return dc
     }
+    func toJson() -> Data {
+        // custom implementation to keep hour ordered even if dict has no order
+        var result = "{\n"
+        for hour in self.keys.sorted(){
+            result += "\"\(hour)\" : \"\(self[hour]!.rawValue)\",\n"
+        }
+        result += "}"
+        return result.data(using: .utf8)!
+    }
 }
 /** description of settings for the week
  keys are days in full english (monday, ...) */
 typealias WeekCalendar = [Days : DayCalendar]
-
+extension WeekCalendar {
+    func toJson()->Data{
+        var result = "{\n"
+        for day in self.keys.sorted(){
+            result += """
+            "\(day.rawValue)" : \(String(data: self[day]!.toJson(), encoding:.utf8)!),\n
+            """
+        }
+        result += "}"
+        return result.data(using: .utf8)!
+    }
+}
 /** encapsulation of weekCalendar for compatibility
  with python Radiator, only key is : weekCalendar
  this object can be encoded using JSON encoder and provide correct file format
@@ -90,12 +120,21 @@ struct CalendarObject {
 extension CalendarObject{
     func toJCalendarObject()->JCalendarObject{
         var wk : JWeekCalendar = [:]
-        for (k, v) in self.weekCalendar {
-            wk[k.rawValue as JDays] = v
+        for k in self.weekCalendar.sorted(by: {d1, d2 in d1.key < d2.key}) {
+            wk[k.key.rawValue as JDays] = self.weekCalendar[k.key]
         }
         return ["weekCalendar" : wk]
     }
+    func toJson()->Data{
+        var result = """
+        {"weekCalendar" :
+        """
+        result += String(data: self.weekCalendar.toJson(), encoding: .utf8)!
+        result += "}"
+        return result.data(using: .utf8)!
+    }
 }
+
 /*
  To avoid the concern of dictionary with non string key encoded to array (even if it is enum with raw value String)
  we replace Days by JDays as String for encoding/decoding
@@ -127,8 +166,6 @@ extension JCalendarObject{
         }
         return CalendarObject(weekCalendar: wk)
     }
-    
-
 }
 
 

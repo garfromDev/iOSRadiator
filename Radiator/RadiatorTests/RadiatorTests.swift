@@ -251,15 +251,33 @@ class CalendarsTests: XCTestCase {
         let monday = de.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Monday, active: true))})
         XCTAssertNotNil(monday)
         XCTAssertNotNil(monday!.applicableTo.contains(DayIndicator(day: .Sunday, active: false)))
-        XCTAssertEqual(monday!.dayTemplate.quarters.first(where: {$0.hour == "00:00"})!.heatMode, .eco)
+        XCTAssertNotNil(monday!.applicableTo.contains(DayIndicator(day: .Thursday, active: true)))
+        XCTAssertEqual(monday!.dayTemplate.quarters.first(where: {$0.hour == "14:00"})!.heatMode, .eco)
         XCTAssertEqual(monday!.dayTemplate.quarters.first(where: {$0.hour == "15:30"})!.heatMode, .confort)
+        let wenesday = de.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Wenesday, active: true))})
+        XCTAssertEqual(wenesday!.dayTemplate.quarters.first(where: {$0.hour == "13:30"})!.heatMode, .eco)
+        XCTAssertEqual(wenesday!.dayTemplate.quarters.first(where: {$0.hour == "11:30"})!.heatMode, .confort)
         let sunday = de.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Sunday, active: true))})
         XCTAssertEqual(sunday!.dayTemplate.quarters.first(where: {$0.hour == "23:30"})!.heatMode, .confort)
-        
-        let rcal = de.toCalendarObject()
+        let rcal = de.toCalendarObject()  // ça ne marche pas!!!!
         let rjcal = rcal.toJCalendarObject()
-        print(rjcal)
+        let json = rcal.toJson()
+        print(String(data:json, encoding: .utf8)!)
         
+        guard let jcal2:JCalendarObject = JCalendarObject.fromJson(json) else {
+            XCTFail("unable to decode json for CalendarObject")
+            return
+        }
+        let cal2 = jcal2.toCalendarObject()
+        let de2 = DaylyEditing(from: cal2.weekCalendar)
+        XCTAssertEqual(de2.templates.count, 3)
+        let monday2 = de2.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Monday, active: true))})
+        XCTAssertNotNil(monday2)
+        XCTAssertNotNil(monday2!.applicableTo.contains(DayIndicator(day: .Sunday, active: false)))
+        XCTAssertEqual(monday2!.dayTemplate.quarters.first(where: {$0.hour == "00:00"})!.heatMode, .eco)
+        XCTAssertEqual(monday2!.dayTemplate.quarters.first(where: {$0.hour == "15:30"})!.heatMode, .confort)
+        let sunday2 = de2.templates.first(where: {$0.applicableTo.contains(DayIndicator(day:.Sunday, active: true))})
+        XCTAssertEqual(sunday2!.dayTemplate.quarters.first(where: {$0.hour == "23:30"})!.heatMode, .confort)
     }
     
     
