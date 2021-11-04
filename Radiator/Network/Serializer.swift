@@ -11,7 +11,7 @@ import os
 
 protocol SerialFileAction {
     func pull(filename: FileName, handler: @escaping DataCompletionHandler)
-    func push(data: Data, filename: String, handler: @escaping DataCompletionHandler)
+    func push(data: DatedData, filename: String, handler: @escaping DataCompletionHandler)
 }
 
 /**
@@ -44,8 +44,8 @@ class Serializer: SerialFileAction {
                     self.distantFileManager.pull(fileName: filename){
                         (result:DataOperationResult) in
                         print("serializer finished pulling \(filename), release semaphore")
-                        self.dfAccessSemaphore.signal() // release access for next operation
                         handler(result)
+                        self.dfAccessSemaphore.signal() // release access for next operation
                     } //end of pull callback
                 } // end of handleCallBack operation
             }
@@ -53,7 +53,7 @@ class Serializer: SerialFileAction {
     } //end of function
     
     
-    func push(data: Data, filename: String, handler: @escaping DataCompletionHandler = {_ in }) {
+    func push(data: DatedData, filename: String, handler: @escaping DataCompletionHandler = {_ in }) {
         sendRequestQueue.async {
             // first wait that any opened ftp Operation is finished
             print("serializer waiting semaphore for pushing \(filename)")
@@ -87,6 +87,18 @@ class Serializer: SerialFileAction {
         } // end of waiting queue operation
     }
     
+    func performSerialAction(action: @escaping ()->Void){
+        sendRequestQueue.async {
+            // first wait that any opened ftp Operation is finished
+            print("serializer waiting semaphore for performing serial action ")
+            if self.dfAccessSemaphore.wait(timeout: .now() + DispatchTimeInterval.seconds(40)) == .success {
+                self.handleCallbackQueue.async(){
+                    action()
+                    self.dfAccessSemaphore.signal()
+                }
+            }
+        }
+    }
     
     init(distantFileManager: DistantFileManager){
         self.distantFileManager = distantFileManager

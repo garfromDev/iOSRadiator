@@ -115,7 +115,7 @@ extension DayTemplate{
 }
 
 
-struct QuarterTemplate: Equatable, Comparable {
+struct QuarterTemplate: Equatable, Comparable, Hashable {
     var heatMode : HeatingMode
     var hour: String = ""
     static func < (lhs: QuarterTemplate, rhs: QuarterTemplate) -> Bool {

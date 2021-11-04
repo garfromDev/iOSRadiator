@@ -65,39 +65,22 @@ extension HeatingMode {
 }
 
 
-@available(iOS 13, *) struct Fill: View{
-    @State var qh = QuarterTemplate(heatMode: .confort, hour: "08")
+@available(iOS 13, *) struct DayTimeline: View{
+    @State var qh : Array<QuarterTemplate>
     var body: some View {
         // tenter forEach qhtab.enumerated()  index, qh in $qhtab[index]
         Group{
-            QuarterHourIndicator(quarter: $qh)
             VStack{
-                Button(action:{}){Text("🀫").fontWeight(.bold).foregroundColor(.red)}
-                Text("  ").font(.caption)
-            }
-            VStack{
-                Text("🀫").fontWeight(.bold).foregroundColor(.red)
-                Text("  ").font(.caption)
-            }
-            VStack{
-                Text("🀫").fontWeight(.bold).foregroundColor(.red)
-                Text("  ").font(.caption)
-            }
-            VStack{
-                Text("🀫").fontWeight(.bold).foregroundColor(.red)
-                Text("  ").font(.caption)
-            }
-            VStack{
-                Text("🀫").fontWeight(.bold).foregroundColor(.red)
-                Text("  ").font(.caption)
+                ForEach(qh.indices) { idx in
+                    QuarterHourIndicator(quarter: $qh[idx])
+                }
             }
         }
     }
 }
 
 
-
-
+// a view showing wich days are applicable to
 @available(iOS 13, *) struct WeekOverview: View {
     @State var days: [DayIndicator]
 
@@ -114,6 +97,7 @@ var body: some View {
 }
 
 
+// A single template for quaterly mode, for selected days
 @available(iOS 13, *) struct DaylyTiming: View {
     var dayGroup: DayGroupEditing
     var body: some View {
@@ -121,10 +105,7 @@ var body: some View {
             WeekOverview(days: dayGroup.applicableTo)
             Divider()
             ScrollView(.horizontal){
-                HStack {
-                    Fill()
-                    Fill()
-                }
+                DayTimeline(qh: dayGroup.dayTemplate.quarters)
             }
         }
         .padding()
@@ -133,6 +114,7 @@ var body: some View {
 
 
 @available(iOS 13, *)
+/// a list of group to edit dayly templates
 struct MultipleDayly: View {
     @EnvironmentObject var mng:UserInteractionManagerIos13
     
@@ -149,8 +131,9 @@ struct MultipleDayly: View {
 @available(iOS 13, *) struct DaylyTiming_Previews: PreviewProvider {
     
     static var previews: some View {
-        let mng = UserInteractionManagerIos13(distantFileManager: FTPfileUploader())
-        return MultipleDayly().environmentObject(mng)
+//        let mng = UserInteractionManagerIos13(distantFileManager: FTPfileUploader())
+//        return DayTimeline(qh: mng.daylyEditing.templates.first!.dayTemplate.quarters)
+        return MultipleDayly().environmentObject(UserInteractionManagerIos13(distantFileManager: FTPfileUploader()))
     }
 }
 

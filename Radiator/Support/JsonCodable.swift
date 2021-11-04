@@ -8,22 +8,30 @@
 
 import Foundation
 
-protocol jsonCodable: Codable{
+protocol jsonEncodable: Codable{
     associatedtype T: Codable
     func toJson() -> Data
-    /// factory method to create CalendarObject from json data
-    static func fromJson(_ data: Data) -> T?
 }
-
-extension jsonCodable{
+extension jsonEncodable{
     func toJson() -> Data {
         let encoder = JSONEncoder()
         return  try! encoder.encode(self)
     }
-    
+}
+
+
+protocol jsonDecodable: Codable {
+    associatedtype T: Codable
+    static func fromJson(_ data: Data) -> T?
+}
+extension jsonDecodable{
     /// factory method to create CalendarObject from json data
     static func fromJson(_ data: Data) -> T? {
         let decoder = JSONDecoder()
         return try? decoder.decode(T.self, from:data)
     }
 }
+
+protocol jsonCodable : jsonEncodable, jsonDecodable{
+}
+

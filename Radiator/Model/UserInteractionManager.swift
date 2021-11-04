@@ -73,12 +73,12 @@ class UserInteractionManager:NSObject{
     
     func pushUpdate(){
         // TODO : transformer DaylyEditing en CalendarObject
-        self.serializer.push(data:self.userInteraction.toJson(),
+        self.serializer.push(data:DatedData(data:userInteraction.toJson()),
                                      filename: Files.userInteraction)
-        self.serializer.push(data: self.calendars.toJson(),
+        self.serializer.push(data: self.calendars.datedJson(),
                                      filename: Files.calendars)
         for (fileName, calendar) in self.weekCalendars{
-            self.serializer.push(data: calendar.toJCalendarObject().toJson(),
+            self.serializer.push(data: calendar.datedJson(),
                                  filename: fileName)
         }
         self.UIupdate()
@@ -94,6 +94,7 @@ class UserInteractionManager:NSObject{
             case .success(let data):
                 if let newcalendars = Calendars.fromJson(data){
                     self.calendars = newcalendars
+                    print("get \(newcalendars.list.count) calendars \(newcalendars.list.first)")
                     // retrieve CalendarObjetcs (weekly quaterhourly mode)
                     var weekCal : [FileName : CalendarObject] = [:]
                     for calFileName in self.calendars.list.values{
@@ -101,18 +102,23 @@ class UserInteractionManager:NSObject{
                             (result:DataOperationResult) in
                             switch result{
                             case .success(let data):
+                                print("trying to convert json to Jcalendar Object")
                                 if let newJCalObj = JCalendarObject.fromJson(data){
+                                    print("appending \(calFileName) to weekCal")
                                     weekCal[calFileName] = newJCalObj.toCalendarObject()
                                 }
                             case .failure(let error):
                                 completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
-                                Xlogger.logError(message:"Failed to retrieve Calendars from server", error: error)
+                                Xlogger.logError(message:"Failed to retrieve Calendar detail from server", error: error)
                             }
                         }
                     }
-                    self.weekCalendars = weekCal
-                    completionHandler(Result.success(newcalendars))
-                    self.UIupdate()
+                    self.serializer.performSerialAction(){
+                        self.weekCalendars = weekCal
+                        print("updated weekCalendars with \(self.weekCalendars.count) calendars")
+                        completionHandler(Result.success(newcalendars))
+                        self.UIupdate()
+                    }
                 }
             case .failure(let error):
                 // in case of failure, we keep current data
@@ -164,8 +170,12 @@ class UserInteractionManager:NSObject{
      will pull new data and called UI refreshing asynchonously
      */
     @objc func refresh(_ t:Timer? = nil){
-        self.pullUserInteraction() { _ in return }
-        self.pullCalendars() { _ in self.UIupdate() } // because of serial mechanism, will be executed last
+        self.pullUserInteraction() { _ in
+            print ("uim doing refresh, pull calendars")
+        self.pullCalendars() { _ in
+            print("uim got result from pullCalendars : \(self.calendars.debugDescription)\n calling UIupfate")
+            self.UIupdate() } // because of serial mechanism, will be executed last
+        }
     }
     
     

@@ -35,6 +35,9 @@ import UIKit
  Visualisation de l'état de connexion
  Retour d'informations (température, ..)
  UI design
+ 
+ détails des synchronisations possibles :
+ userInteraction : s'initialise avec une date ancienne, rempalcé par fichier distant si on l'obtient.
  */
 
 @UIApplicationMain

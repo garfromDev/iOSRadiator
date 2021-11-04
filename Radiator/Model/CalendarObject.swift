@@ -113,9 +113,13 @@ extension WeekCalendar {
  with python Radiator, only key is : weekCalendar
  this object can be encoded using JSON encoder and provide correct file format
  */
-struct CalendarObject {
-    // FIXME : a-t-on réelement besoin de CalendarObject?
-    var weekCalendar: WeekCalendar
+struct CalendarObject: Dated {
+    internal var lastChangeDate : Date = Date.distantPast
+    var weekCalendar: WeekCalendar {
+        didSet {
+            lastChangeDate = Date()
+        }
+    }
 }
 extension CalendarObject{
     func toJCalendarObject()->JCalendarObject{
@@ -125,6 +129,10 @@ extension CalendarObject{
         }
         return ["weekCalendar" : wk]
     }
+}
+
+extension CalendarObject: jsonEncodable{
+    typealias T = CalendarObject
     func toJson()->Data{
         var result = """
         {"weekCalendar" :
@@ -134,6 +142,7 @@ extension CalendarObject{
         return result.data(using: .utf8)!
     }
 }
+extension CalendarObject: JsonDated {}
 
 /*
  To avoid the concern of dictionary with non string key encoded to array (even if it is enum with raw value String)
@@ -148,7 +157,7 @@ typealias JCalendarObject   = [String:JWeekCalendar]
  week.json as input
  
  */
-extension JCalendarObject: jsonCodable{
+extension JCalendarObject: jsonCodable, jsonEncodable, jsonDecodable{
     typealias T = JCalendarObject
 }
 
@@ -164,7 +173,7 @@ extension JCalendarObject{
                 wk[day] = v
             }
         }
-        return CalendarObject(weekCalendar: wk)
+        return CalendarObject(lastChangeDate: Date(), weekCalendar: wk)
     }
 }
 
@@ -173,16 +182,29 @@ typealias CalendarName = String
 typealias FileName = String
 /** contient tous les calendriers disponibles
 */
-class Calendars:NSObject, Codable {
-    var currentCalendar : CalendarName = ""
-    var list : [CalendarName: FileName] = [:]
+class Calendars:NSObject, Codable, Dated {
+    internal var lastChangeDate : Date = Date()  //TODO: vérifier si il faut initialiser dans le passé
+    var currentCalendar : CalendarName = "" {
+        didSet {
+            lastChangeDate = Date()
+        }
+    }
+    var list : [CalendarName: FileName] = [:] {
+        didSet {
+            lastChangeDate = Date()
+        }
+    }
     var names : [String] {list.keys.map({$0})}
 }
+
 
 /// add create from export to json ability
 extension Calendars: jsonCodable {
     typealias T = Calendars
 }
+
+extension Calendars: JsonDated {}
+
 
 //MARK:  add DataSource capability
 extension Calendars: UITableViewDataSource {
