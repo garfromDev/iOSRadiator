@@ -45,15 +45,7 @@ class UserInteractionManager:NSObject{
     var weekCalendars : [FileName : CalendarObject] = [:]
     
     // singleton
-    static var shared : UserInteractionManager {
-        get {
-            if #available(iOS 13, *){
-                return UserInteractionManagerIos13(distantFileManager: FTPfileUploader())}
-            else{
-                return UserInteractionManagerIos9(distantFileManager: FTPfileUploader())
-            }
-        }
-    }
+    static let shared : UserInteractionManager = UserInteractionManagerSelector.select()
     static let updateUInotification = Notification.Name("updateUI")
     static let distantFileErrorNotification = Notification.Name("distantFileError")
     static let standardCalendarFile = "week.json"
@@ -122,6 +114,7 @@ class UserInteractionManager:NSObject{
                 }
             case .failure(let error):
                 // in case of failure, we keep current data
+                print("failure pulling calendars \(error.localizedDescription)")
                 completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
                 Xlogger.logError(message:"Failed to retrieve Calendars from server", error: error)
             } //end switch
@@ -135,6 +128,7 @@ class UserInteractionManager:NSObject{
             (result:DataOperationResult) in
             switch result{
                 case .success(let data):
+                    print("UserInteractionmanager : pullUserInteraction succesfull")
                     if let newUsrInteraction = UserInteraction.fromJson(data: data){
                         self.userInteraction = newUsrInteraction
                         completionHandler(Result.success(newUsrInteraction))
@@ -142,6 +136,7 @@ class UserInteractionManager:NSObject{
                 }
                 case .failure(let error):
                     // in case of failure, we keep current data
+                    print("Failed to retrieve Calendars from server")
                     completionHandler(Result.failure(.IOerror(msg: error.localizedDescription)))
                     Xlogger.logError(message: "Failed to retrieve Calendars from server", error: error)
             } // end switch
@@ -153,12 +148,14 @@ class UserInteractionManager:NSObject{
      */
     func pull(handler completionHandler: @escaping (UIBackgroundFetchResult) -> Void){
         self.pullCalendars() {
-            result in return
+            result in
+            return
         }
         self.pullUserInteraction() {
             result in
             switch result {
             case .success(_):
+                print("pulled user interaction succesfull")
                 completionHandler(.newData)
             case .failure:
                 completionHandler(.failed)
@@ -170,11 +167,13 @@ class UserInteractionManager:NSObject{
      will pull new data and called UI refreshing asynchonously
      */
     @objc func refresh(_ t:Timer? = nil){
+        print("refreshing user interaction")
         self.pullUserInteraction() { _ in
             print ("uim doing refresh, pull calendars")
-        self.pullCalendars() { _ in
-            print("uim got result from pullCalendars : \(self.calendars.debugDescription)\n calling UIupfate")
-            self.UIupdate() } // because of serial mechanism, will be executed last
+            self.pullCalendars() { _ in
+                print("uim got result from pullCalendars : \(self.calendars.debugDescription)\n calling UIupfate")
+                self.UIupdate()
+            } // because of serial mechanism, will be executed last
         }
     }
     
@@ -191,12 +190,27 @@ class UserInteractionManager:NSObject{
         let newCalendar = self.calendars.names[index.row]
         self.calendars.currentCalendar = newCalendar
         guard let newCalFile = self.calendars.list[newCalendar] else {return}
+        print("trigger copying \(newCalFile) to \(Files.standardCalendarFile)")
         self.serializer.copyItem(path: newCalFile, to: Files.standardCalendarFile)
         self.pushUpdate()
     }
     
     
 } // end of class UserInteractionManager
+
+
+/** this class allow to select an appropriate  UserInteractionManager according iOS version
+    thanks to https://stackoverflow.com/questions/46101402/use-different-implementations-of-a-class-depending-on-ios-version */
+class UserInteractionManagerSelector{
+    
+    class func select() ->UserInteractionManager {
+        if #available(iOS 13, *){
+            return UserInteractionManagerIos13(distantFileManager: FTPfileUploader())
+        }else{
+            return UserInteractionManagerIos9(distantFileManager: FTPfileUploader())
+        }
+    }
+}
 
 
 @available(iOS 13.0, *)

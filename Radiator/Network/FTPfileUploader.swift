@@ -67,7 +67,7 @@ enum FtpError: Error {
 struct FTPfileUploader : DistantFileManager {
     func copyItem(path: String, to toPath: String, overwrite: Bool, completionHandler: @escaping (DataOperationResult) -> Void) {
         print("copying \(path) to \(toPath)")
-        let ftp = FTPfileUploader.prepareFtp()!  // TODO: mettre un guard
+        guard let ftp = FTPfileUploader.prepareFtp(completionHandler) else {return}
         ftp.copyItem(path: path, to: toPath, overwrite: overwrite) {
             err in
             if let error = err { completionHandler(Result.failure(error)) }
@@ -75,13 +75,18 @@ struct FTPfileUploader : DistantFileManager {
         }
     }
     
-
-    static func prepareFtp() -> FTPFileProvider?{
-        let user = ProcessInfo.processInfo.environment["FTP_USER"] ?? ""
-        let password = ProcessInfo.processInfo.environment["FTP_PASSWORD"] ?? ""
-        let url = ProcessInfo.processInfo.environment["FTP_URL"] ?? ""
+    
+    static func prepareFtp(_ completion: DataCompletionHandler?) -> FTPFileProvider?{
+        guard let user = ProcessInfo.processInfo.environment["FTP_USER"],
+              let password = ProcessInfo.processInfo.environment["FTP_PASSWORD"],
+              let urlStr = ProcessInfo.processInfo.environment["FTP_URL"],
+              let url = URL(string: urlStr)
+        else { return nil }
         let cred = URLCredential(user: user, password: password, persistence: .forSession)
-        guard let ftp = FTPFileProvider(baseURL: URL(string: url)!, mode: .passive, credential: cred, cache: nil) else {
+        guard let ftp = FTPFileProvider(baseURL: url, mode: .passive, credential: cred, cache: nil) else {
+            if let handler = completion{
+                handler(Result.failure(FtpError.ftpUnreachableError))
+            }
             return nil
         }
         ftp.serverTrustPolicy = .disableEvaluation
@@ -89,22 +94,21 @@ struct FTPfileUploader : DistantFileManager {
     }
     
     func push(data: DatedData, fileName: String, completion:@escaping DataCompletionHandler) {
-        print("pushing file to ftp...")
-        guard let ftp = FTPfileUploader.prepareFtp() else
-            {
-            completion(Result.failure(FtpError.ftpUnreachableError))
-            return
-            }
-        // TODO: check date of distant file to not overwrite
-        //        let distantDate = serverDateKey
+        print("pushing file \(fileName) to ftp...")
+        guard let ftp = FTPfileUploader.prepareFtp(completion) else {return }
         ftp.attributesOfItem(path: fileName){ (f:FileObject?, err:Error?) in
             if let distantDate = f?.modifiedDate, distantDate >= data.lastChangeDate {
                 print("\(fileName) not pushed, distant date \(distantDate) > last change  date \(data.lastChangeDate)")
                 completion(Result.success(data.data))  //we consider as a success and allow further processing
             }else{ // no distant date, or it is in the past
+                print("writing content of file \(fileName)")
                 ftp.writeContents(path: fileName, contents: data.data, overwrite: true) {
                     err in
-                    if let error = err { completion(Result.failure(error)) }
+                    if let error = err {
+                        print("erreur pushing \(error)")
+                        completion(Result.failure(error))
+                    }
+                    print("pushing <\(fileName)> succesfull")
                     completion(Result.success(Data()))
                 }
             }
@@ -112,13 +116,13 @@ struct FTPfileUploader : DistantFileManager {
     }
     
     func pull(fileName: String, completion: @escaping DataCompletionHandler){
-        let ftp = FTPfileUploader.prepareFtp()!  // TODO: mettre un guard
+        guard let ftp = FTPfileUploader.prepareFtp(completion) else {return }
         print("FTP fileuploader pulling \(fileName)")
         ftp.contents(path: fileName) {
             contents, error in
             print("FTP fileuploader got pulling response for \(fileName)")
             if let contents = contents {
-                print("FTP fileuploader sucess  for \(fileName)")
+                print("FTP fileuploader sucess  for \(fileName) with contents \(contents)")
                 completion(.success(contents))
             }else{
                 print("FTP fileuploader error for \(fileName) :" + "\(String(describing:error?.localizedDescription)) -" +

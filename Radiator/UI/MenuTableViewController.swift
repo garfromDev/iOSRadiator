@@ -12,7 +12,7 @@ import FilesProvider
 /** handle the main static table view , choice of heating mode  and adjustement */
 class MenuTableViewController: UITableViewController  {
 
-    weak var userInteractionManager : UserInteractionManager? = UserInteractionManager.shared
+    lazy let userInteractionManager : UserInteractionManager? = UserInteractionManager.shared
     
     /** index for the Segmented Selector to choose heating mode */
     enum ModeSelectorIndex:Int {
@@ -80,7 +80,7 @@ extension MenuTableViewController: UI_Updatable{
     override func viewDidLoad() {
         super.viewDidLoad()
         // userInteractionManager will trigger UI_Update() upon model change
-        _ = NotificationCenter.default.addObserver(self, selector: #selector(triggerUpdateUI(_:))
+        NotificationCenter.default.addObserver(self, selector: #selector(triggerUpdateUI(_:))
             , name: UserInteractionManager.updateUInotification,
             object : nil)
     }

@@ -80,6 +80,7 @@ class Serializer: SerialFileAction {
                     self.distantFileManager.copyItem(path: path, to: toPath, overwrite: true){
                         (result:DataOperationResult) in
                         self.dfAccessSemaphore.signal() // release access for next operation
+                        print("copying \(path) to \(toPath) with result \(result)")
                         completionHandler(result)
                     } //end of pull callback
                 } // end of handleCallBack operation

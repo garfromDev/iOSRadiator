@@ -16,7 +16,6 @@ import SwiftUI
 class CalendarsTableViewController: UITableViewController
 {
     var uim = UserInteractionManager.shared
-//    let uim = UserInteractionManagerIos13(distantFileManager: FTPfileUploader())
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,6 +25,7 @@ class CalendarsTableViewController: UITableViewController
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         uim.didSelectCalendarAt(index: indexPath)
+        return  // TODO: pour l'instant, l'édition est désactivé
         if #available(iOS 13, *){
             let viewCtrl = UIHostingController(rootView: MultipleDayly().environmentObject(uim as! UserInteractionManagerIos13))
             self.present(viewCtrl, animated: true)
@@ -41,7 +41,7 @@ extension CalendarsTableViewController: UI_Updatable{
     }
     
     func updateUI(timestamp: String = "") {
-        print("reloading tableView with \(uim.calendars.debugDescription) calendars")
+        print("reloading tableView with <\(uim.calendars.debugDescription)> calendars")
         self.tableView?.dataSource = uim.calendars
         self.tableView?.reloadData()
     }

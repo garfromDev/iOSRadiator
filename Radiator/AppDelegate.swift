@@ -30,6 +30,10 @@ import UIKit
  sinon, il aurait mieux valu injecter le UiManager en dépendance cf https://code.tutsplus.com/fr/tutorials/the-right-way-to-share-state-between-swift-view-controllers--cms-28474
  
  PROCHAINES ETAPES:
+ ok appli -> ftp (userInteraction) et ftp -> appli (userIntearction et calendrier courant)
+ ok ftp -> radia (UserInteraction et week)
+ ok week sur ftp en accord avec calendrier choisi
+ 
  édition des calendrier
  supression des calendriers
  Visualisation de l'état de connexion
@@ -90,7 +94,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        self.timer = Timer.scheduledTimer(timeInterval: self.refreshInterval, target: self.userInteractionManager, selector: #selector(UserInteractionManager.refresh(_:)), userInfo: nil, repeats: true)
+        self.timer = Timer.scheduledTimer(timeInterval: self.refreshInterval, target: self.userInteractionManager, selector: #selector(self.userInteractionManager.refresh(_:)), userInfo: nil, repeats: true)
     }
 
     func applicationWillTerminate(_ application: UIApplication) {

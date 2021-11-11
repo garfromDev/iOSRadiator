@@ -26,6 +26,8 @@
 		3037CAC823B94B250071CAE1 /* FilesProvider.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 30B2829521DC0C1900CE731C /* FilesProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		303C69AC21E3E6C100EABBF6 /* CalendarObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 303C69A821E3E6C000EABBF6 /* CalendarObject.swift */; };
 		304D1D722548B71F0034ECD7 /* log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 304D1D712548B71F0034ECD7 /* log.swift */; };
+		305CE881273D1EA8000BF2C6 /* userInteraction.json in Resources */ = {isa = PBXBuildFile; fileRef = 305CE87D273D1EA8000BF2C6 /* userInteraction.json */; };
+		305CE887273D1F34000BF2C6 /* TestUserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 305CE886273D1F34000BF2C6 /* TestUserInteraction.swift */; };
 		3063FEDE23BF1558006F6F83 /* testCalendars.json in Resources */ = {isa = PBXBuildFile; fileRef = 3063FEDD23BF1558006F6F83 /* testCalendars.json */; };
 		3067011121D913AA008C7A53 /* UserInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3067011021D913AA008C7A53 /* UserInteraction.swift */; };
 		3068ABC421DB85AB00D092CF /* UserInteractionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */; };
@@ -137,6 +139,8 @@
 		3037CAB823B94A430071CAE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		303C69A821E3E6C000EABBF6 /* CalendarObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarObject.swift; sourceTree = "<group>"; };
 		304D1D712548B71F0034ECD7 /* log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = log.swift; sourceTree = SOURCE_ROOT; };
+		305CE87D273D1EA8000BF2C6 /* userInteraction.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = userInteraction.json; sourceTree = "<group>"; };
+		305CE886273D1F34000BF2C6 /* TestUserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestUserInteraction.swift; sourceTree = "<group>"; };
 		3063FEDD23BF1558006F6F83 /* testCalendars.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = testCalendars.json; sourceTree = "<group>"; };
 		3067011021D913AA008C7A53 /* UserInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteraction.swift; sourceTree = "<group>"; };
 		3068ABC321DB85AB00D092CF /* UserInteractionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserInteractionManager.swift; sourceTree = "<group>"; };
@@ -302,12 +306,14 @@
 		3077E55521CC333C00814343 /* RadiatorTests */ = {
 			isa = PBXGroup;
 			children = (
+				305CE87D273D1EA8000BF2C6 /* userInteraction.json */,
 				3063FEDD23BF1558006F6F83 /* testCalendars.json */,
 				30F369242532496C0001A8C7 /* week.json */,
 				3077E55621CC333C00814343 /* RadiatorTests.swift */,
 				30862490255C2CDE003C0D4C /* testDayTemplate.swift */,
 				3077E55821CC333D00814343 /* Info.plist */,
 				30F4685E23BB78080011B3C9 /* TestFiles.xcassets */,
+				305CE886273D1F34000BF2C6 /* TestUserInteraction.swift */,
 			);
 			path = RadiatorTests;
 			sourceTree = "<group>";
@@ -539,6 +545,7 @@
 				30F4685F23BB78080011B3C9 /* TestFiles.xcassets in Resources */,
 				3063FEDE23BF1558006F6F83 /* testCalendars.json in Resources */,
 				30F369282532496C0001A8C7 /* week.json in Resources */,
+				305CE881273D1EA8000BF2C6 /* userInteraction.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -594,6 +601,7 @@
 			files = (
 				30862491255C2CDE003C0D4C /* testDayTemplate.swift in Sources */,
 				3077E55721CC333C00814343 /* RadiatorTests.swift in Sources */,
+				305CE887273D1F34000BF2C6 /* TestUserInteraction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
